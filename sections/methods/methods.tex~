@@ -1,0 +1,131 @@
+%Carthage Physics Senior Thesis
+%Author: Aaron Scheets
+
+\documentclass[twocolumn,12pth]{article}
+\usepackage[hmargin={1.25in,0.75in},bmargin=1in,tmargin=1in]{geometry} 
+\usepackage{setspace}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage[ampersand]{easylist}
+
+\usepackage{natbib}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage{float}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+\title{Writing A Fluid Solver From First}
+
+\author{Aaron Scheets}
+
+\onecolumn
+
+\begin{document}
+
+\maketitle
+
+\section{Method: Components of a Numerical Solution}
+
+\subsection{Mathematical Model}
+
+\subsubsection{Newton's Second Law Applied to a Control Volume}
+
+We can obtain a general notion for what the general equations of fluid motion should consist of by applying Newton's Second Law to a control volume of fluid.
+Newton's second law states that the mass times acceleration of a system is equal to the net force applied to that system:
+
+\begin{equation*}
+m\vec{a} = \sum{F_{system}}
+\end{equation*}
+
+Another way of expressing Newton's Second is equating the rate of change of momentum with respect to time of the system to the sum of the forces on that system:
+
+\begin{equation}
+\frac{d{\vec{p}}}{dt} = \sum F_{system}
+\end{equation}
+
+These expressions are Newton's Second Law as applied to a \textit{system}.
+In the case of fluids a system is defined as a specific group of fluid particles: ``the volume, pressure, and temperature of the system can change but the system, that is, the identity of mass, does not change''. cite Granger
+This is also the case with rigid bodies like point masses, but in that case it is not usually something worth distinguishing.
+In contrast to a system, is the \textit{control volume}, which is a definite volume of space, established by a set of surfaces, through which fluid mass can flow.
+We can see why the difference between a system and a control volume has to be made clear if we remember that we are trying to figure out the velocity of the fluid within some larger volume, in this case the pipe.
+Were we to apply Newton's Second Law as is, we would have to keep track of a set of masses as they pass through the pipe.
+One can imagine how hard it woud be to mathematically model the path of one particular chunk of flowing water.
+It would be much easier to divide our pipe into a set of definite volumes and apply the control volume approach at each of these volumes by observing the mass passing through the volume surfaces.
+That being said, we have to come up with a form of Newton's Second Law that applies to a control volume rather than a system.
+
+
+\subsubsection{1-D Linear Convection}
+
+A good starting point for thinking about the equations of fluid motion, which are a set of vector partial differential equations, is the 1-D Linear Convection Equation:
+
+\begin{equation}
+\frac{\partial{u}}{\partial{t}} + c\frac{\partial{u}}{\partial{x}} = 0
+\end{equation}
+
+
+\subsection{Discretization Method}
+
+Numerical solutions are approximations to continuous mathematical expressions.
+The mathematical expressions of interest in this case are the component equations of the set of Navier-Stokes equations.
+These are equations in space, and in time. 
+In the realm of mathematical analysis, and when we solve equations analytically, we deal with continuous functions.
+When equations cannot be solved analytically, as is the case with the Navier-Stokes equations, they can be approximated through \textit{discretization methods}.
+Discretization method solutions are approximations because they can only produce information about the function at a finite set of points.
+The process of discretization leaves our mathematical model as a system of linear equations or as a system of ordinary differential equations.
+Now our mathematical model can be solved by solving a linear system of equations, which depending on the size of the fluid application, involves performing a massive amount of arithmetic operations.
+This is convenient if you are using a computer because computers are really good at solving massive amounts of arithmetic operations.
+Before the advent of computers, the Navier-Stokes equations could be solved using similar discretization methods, however, this required rooms full of people solving linear systems of equations to get a final answer.
+The discretization process is essentially chopping up: 1.The fluid domain (the pipe), into a set of finite points, and 2.The mathematical model (the Navier-Stokes Equations) into a set of finite arithmetic operations.
+
+The fluid domain \textit{discretized} into a set of finite points is known as a \textit{Numerical Grid}.
+Numerical grids can be uniform or non-uniform; in general it is easier to solve for a uniform, structured grid, see Figure \ref{fig:grid}.
+This is the type of grid I used to represent the pipe in the simulation.
+
+\begin{figure}
+\centering
+\includegraphics[width=3.0in]{numericalGrid.png}
+\captionof{figure}{To solve for the velocity and pressure of water flowing within the pipe, first we need to divide the pipe into a finite set of points. We are interested in the value of velocity and pressure at these points.}
+\label{fig:grid}
+\end{figure}
+
+\subsubsection{Finite Differences}
+
+Finite difference methods are an approximation to the derivative.
+Given some function $u(x)$, if we are interested in the derivative of $u(x)$ at some point $i$ along the x-axis, we could approximate the derivative as follows:
+
+\begin{equation*}
+\frac{du}{dx} = \frac{u(i + \Delta{x}) - u(i)}{\Delta{x}}
+\end{equation*}
+
+This gives the rate of change in $u$ with respect to $x$.
+This particular approximation is a \textit{forward approximation} because we are approximating the derivative at $i$ by considering values of $u$ in the forward direction.
+The \textit{backwards approximation} is a similar expression, but we are taking the derivative with respect to points to the left of $i$ on the x-axis.
+
+\begin{equation*}
+\frac{du}{dx} = \frac{u(i) - u(i - \Delta{x})}{\Delta{x}}
+\end{equation*}
+
+A central difference about the point $i$ would be observing the change in $u$ from $i - \Delta{x}$ to $i + \Delta{x}$:
+
+\begin{equation*}
+\frac{du}{dx} = \frac{u(i + \Delta{x}) - u(i - \Delta{x})}{2\Delta{x}}
+\end{equation*}
+
+\begin{figure}
+\centering
+\includegraphics[width=3.0in]{finiteDif.png}
+\captionof{figure}{The forward, backward and central differences are approximations to the actual derivative of our function. Some approximations will be better than others, depending on the function in consideration.}
+\label{fig:difs}
+\end{figure}
+
+The factor of $2\Delta{x}$ in the central difference comes about beause we are observing the change in $u$ over twice the distance utilized in the forward and backward difference equations.
+
+\end{document}
+

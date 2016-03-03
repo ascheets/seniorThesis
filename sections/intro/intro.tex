@@ -1,0 +1,101 @@
+%Carthage Physics Senior Thesis
+%Author: Aaron Scheets
+
+\documentclass[twocolumn,12pth]{article}
+\usepackage[hmargin={1.25in,0.75in},bmargin=1in,tmargin=1in]{geometry} 
+\usepackage{setspace}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage[ampersand]{easylist}
+
+\usepackage{natbib}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage{float}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+\title{Writing A Fluid Solver From First}
+
+\author{Aaron Scheets}
+
+\onecolumn
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This thesis is an investigation of the components of a ``fluid solver''.
+I have put ``fluid solver'' in quotations because, the topic of fluid solvers is an extremely broad topic, which rests upon an even broader topic, fluid mechanics.
+Some of the most, exciting, beautiful, and complicated processes in nature are problems of fluid mechanics.
+There are extraordinary fluid phenomena to model from the scale of the plume of steam coming from your cup of coffee in the morning (and even smaller), to the dynamics of ocean currents (and even larger).
+Words can hardly do these flows justice, which is why visualization of flows is so important in fluid dynamics, and why you should check out ``http://gfm.aps.org/'' to see some really cool examples of fluid dynamics.
+The only problem is, the math behind these exciting flows usually can't be solved analytically. 
+We can make simplifications on systems to solve them analytically, or we can setup the problem in such a way that a computer can give us an approximate answer by making a very large number of calcuations.
+The goal of my thesis research was to investigate the process of modeling a dynamic fluid mathematically and then using computational methods to visualize that fluid.
+Visualizing a fluid means solving for the velocity, pressure or temperature of that fluid.
+The dynamic fluid I have modeled is an \textit{incompressible} fluid, like water, flowing in a pipe. 
+I chose the case of incompressible flow in a pipe because, making certain simplifications, incompressible flow in a pipe can be solved for analytically. 
+
+\subsection{Fluid Modeling Process}
+
+For the sake of consistency and organization in the midst of the somewhat intimidating task of writing a fluid solver, it is helpful to establish an outline of our approach to the problem.
+So, imagine someone places a clear pipe through which water is flowing in front of you, and asks you: What is the velocity of the water in the pipe?
+The approach you might take to answering this question depends on the accuracy demanded by the person asking for the velocity.
+Determining the velocity in the pipe will involve some combination of mathematical analysis and experimental verification.
+It would make sense, if one were to derive a mathematical expression for the fluid velocity in the pipe, to construct an experiment which could verify the correctness of the model.
+When replication of the fluid process cannot be easily done in the lab, or when the measurement of the fluid properties would interfere with the flow, computational visualizations take the place of physical experiment.
+As such, the starting point of a computational fluid dynamics study is the mathematical model.
+The following are the subsequent components of a fluid solver, outlined by Ferziger and Peric.
+
+\begin{easylist}[enumerate]
+
+& Mathematical Model
+& Discretization Method
+& Coordinate and Basis Vector System
+& Numerical Grid
+& Finite Approximations
+& Solution Method
+& Convergence Criteria
+
+\end{easylist}
+
+The rest of this document will present what each of these components entails and how the component was applied to incompressible, unsteady, fluid flow in a pipe.
+
+\section{Mathematical Modeling}
+
+\subsection{What is a fluid?}
+
+The first question one might have is, what is a fluid?
+A fluid is a substance without resistance to \textit{shear} forces.
+Imagine a cube of some particular substance, and consider the top and bottom face of that cube in particular.
+Apply a force tangential to the top face and a separate force tangential to the bottom face and the result is shear.
+Now, picture two cubes resting on a table; one a solid cube of ice and the other a cube of water.
+Were you to give each cube a nudge near the top face, the ice cube would retain its shape and maybe move along the table.
+The result of nudging the fluid cube would be continous \textit{deformation}, the cube would lose its shape as the water spreads over the table.
+The deformation the fluid undergoes is due to the fluid's lack of resistance to shear, which is a result of the molecular properties of the fluid.
+The attraction between molecules within the solid is greater than those found in the fluid.
+Gases are also fluids as they show no resistance to sideways forces.
+
+\subsection{Fluid Adjectives}
+
+Previously I mentioned the extensive nature of fluid mechanics and that I modeled \textit{incompressible} fluid flow.
+An incompressible fluid, like water, is a fluid whose density is constant, in contrast to a compressible fluid, like air, whose density is not constant.
+These adjectives describe physical characteristics of the differing fluids.
+Specifying a fluid using these adjectives gives us a sense of what equations should be used to model the fluid, and what assumptions can be made to simplify those equations.
+Figure ? gives depicts the divisions in physical characteristics made when considering a fluid.
+Going right through this chart, I can classify the fluid subject of my model: liquid, incompressible, unsteady, viscous, rotational, and two-dimensional!
+These characteristics dictate which equations I can and should use to model the fluid.
+Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a compressible gas, I would instead use Euler's equations.
+
+
+\end{document}
+

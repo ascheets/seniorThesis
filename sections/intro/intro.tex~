@@ -1,0 +1,48 @@
+%Carthage Physics Senior Thesis
+%Author: Aaron Scheets
+
+\documentclass[twocolumn,12pth]{article}
+\usepackage[hmargin={1.25in,0.75in},bmargin=1in,tmargin=1in]{geometry} 
+\usepackage{setspace}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage[ampersand]{easylist}
+
+\usepackage{natbib}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage{float}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+\title{Writing A Fluid Solver From First}
+
+\author{Aaron Scheets}
+
+\onecolumn
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This thesis is an investigation of the components of a ``fluid solver''.
+I have put ``fluid solver'' in quotations because, the topic of fluid solvers is an extremely broad topic, which rests upon an even broader topic, fluid mechanics.
+In a generic sense, fluid solvers encapsulate the computational methods designed to solve the problems of fluid mechanics.
+Despite the extensive nature of fluid mechanics and the accompanying computational methods, the well-established classification system of fluids and fluid flow allows one to focus on a smaller subset of fluid phenomena, thankfully prolonging the explosion of one's own head from information overload.
+The goal of this thesis is to concretely identify one particular subset of fluid flow, then thoroughly present a selection of computational methods that might be applied to ``solve'' for that fluid flow.
+I have put ``solve'' in quotations here, because, ``solving'' for fluid flow is yet another ambiguous term in the realm of fluid mechanics.
+When one has decided which particular fluid to study, ``solving'' for that fluid means acquiring information pertaining to that fluid through some means.
+The information of a fluid of interest, which depends on the application of modeling the fluid in the first place, can include the velocity of fluid flow, the pressure, or temperature of the fluid.
+This information can be acquired through experiment or through theoretical analysis.
+Computational fluid dynamics is arguably a hybrid of these two techniques, and the components of this hybrid technique will be the subject matter of this thesis.
+
+\end{document}
+

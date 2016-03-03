@@ -1,0 +1,72 @@
+%Carthage Physics Senior Thesis
+%Author: Aaron Scheets
+
+\documentclass[twocolumn,12pth]{article}
+\usepackage[hmargin={1.25in,0.75in},bmargin=1in,tmargin=1in]{geometry} 
+\usepackage{setspace}
+\usepackage{url}
+\usepackage{syntonly}
+\usepackage[ampersand]{easylist}
+
+\usepackage{natbib}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage{float}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+\title{Writing A Fluid Solver From First Principles-Outline}
+
+\author{Aaron Scheets}
+
+\onecolumn
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\begin{easylist}[enumerate]
+& Motivation/hook
+& History/context
+& Overview sort of...
+
+\end{easylist}
+
+\section{Components of a Numerical Solution Method}
+
+\begin{easylist}[enumerate]
+
+& Mathematical Model
+&& First of all, what are you modeling?
+&&& Incompressible fluid flow in a channel
+&&& What are the physical implications of the fluid adjectives used here?
+&& Why are you modeling this?
+&& How are you modeling it, what set of equations are you using?
+&& Why are you modeling it this way?
+& Discretization Method
+&& I am using finite differences to discretize the equations
+&& What does it mean to ``discretize''?
+&& How do finite differences discretize the equations in question?
+&& How well do finite differences match the physics in question?
+& Coordinate and Basis Vector System
+&& Working in Cartesian Coordinates
+&& Why are you working in cartesian coordinates?
+&& What would change if using different coordinate system?
+&& ``Basis in which vectors and tensors will be defined''?
+& Numerical Grid
+& Finite Approximations
+& Solution Method
+& Convergence Criteria
+
+\end{easylist}
+
+\end{document}
+
