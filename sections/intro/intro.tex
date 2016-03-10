@@ -21,7 +21,7 @@
 \usepackage{caption}
 
 
-\title{Writing A Fluid Solver From First}
+\title{Writing A Fluid Solver From First Principles (Introduction/Mathematical Model)}
 
 \author{Aaron Scheets}
 
@@ -34,10 +34,9 @@
 \section{Introduction}
 
 This thesis is an investigation of the components of a ``fluid solver''.
-I have put ``fluid solver'' in quotations because, the topic of fluid solvers is an extremely broad topic, which rests upon an even broader topic, fluid mechanics.
 Some of the most, exciting, beautiful, and complicated processes in nature are problems of fluid mechanics.
 There are extraordinary fluid phenomena to model from the scale of the plume of steam coming from your cup of coffee in the morning (and even smaller), to the dynamics of ocean currents (and even larger).
-Words can hardly do these flows justice, which is why visualization of flows is so important in fluid dynamics, and why you should check out ``http://gfm.aps.org/'' to see some really cool examples of fluid dynamics.
+Words can hardly do these flows justice, which is why visualization of flows is so important in fluid dynamics.
 The only problem is, the math behind these exciting flows usually can't be solved analytically. 
 We can make simplifications on systems to solve them analytically, or we can setup the problem in such a way that a computer can give us an approximate answer by making a very large number of calcuations.
 The goal of my thesis research was to investigate the process of modeling a dynamic fluid mathematically and then using computational methods to visualize that fluid.
@@ -53,24 +52,27 @@ The approach you might take to answering this question depends on the accuracy d
 Determining the velocity in the pipe will involve some combination of mathematical analysis and experimental verification.
 It would make sense, if one were to derive a mathematical expression for the fluid velocity in the pipe, to construct an experiment which could verify the correctness of the model.
 When replication of the fluid process cannot be easily done in the lab, or when the measurement of the fluid properties would interfere with the flow, computational visualizations take the place of physical experiment.
-As such, the starting point of a computational fluid dynamics study is the mathematical model.
-The following are the subsequent components of a fluid solver, outlined by Ferziger and Peric.
+The following are a basic overview of the computational modeling process:
+\vspace{2mm}
 
 \begin{easylist}[enumerate]
-
-& Mathematical Model
-& Discretization Method
-& Coordinate and Basis Vector System
-& Numerical Grid
-& Finite Approximations
-& Solution Method
-& Convergence Criteria
-
+& Mathematical model
+& Discretization method
+& Analyze validitiy of discretization method
+& Solve system using computer
+& Visualize and anaylze results
 \end{easylist}
 
+\vspace{2mm}
+The starting point of a computational fluid dynamics study is the mathematical model.
+Once one has come up with a mathematical model for the fluid in question, a discretization scheme is applied to the model.
+Discretization schemes express the continuous equations of the model in a form that can be solved by a computer.
+After a discretization scheme has been chosen, one must analyze the validity of the scheme in the context of the fluid in question: does the scheme violate any of the physics governing the fluid?
+After the scheme has been validated, hopefully the scheme can be solved by a computer to produce a data set for the velocity and pressure of the fluid.
+The velocity vector field and pressure scalar field must then be visualized using graphical software for further analysis.
 The rest of this document will present what each of these components entails and how the component was applied to incompressible, unsteady, fluid flow in a pipe.
 
-\section{Mathematical Modeling}
+\section{Mathematical Model}
 
 \subsection{What is a fluid?}
 
@@ -96,6 +98,122 @@ Going right through this chart, I can classify the fluid subject of my model: li
 These characteristics dictate which equations I can and should use to model the fluid.
 Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a compressible gas, I would instead use Euler's equations.
 
+\subsubsection{Newton's Second Law Applied to a Control Volume}
+
+We can obtain a general notion for what the general equations of fluid motion should consist of by applying Newton's Second Law to a control volume of fluid.
+Newton's second law states that the mass times acceleration of a system is equal to the net force applied to that system:
+
+\begin{equation*}
+m\vec{a} = \sum{F_{system}}
+\end{equation*}
+
+Another way of expressing Newton's Second is equating the rate of change of momentum with respect to time of the system to the sum of the forces on that system:
+
+\begin{equation}
+\frac{d{\vec{p}}}{dt} = \sum F_{system}
+\end{equation}
+
+These expressions are Newton's Second Law as applied to a \textit{system}.
+In the case of fluids a system is defined as a specific group of fluid particles: ``the volume, pressure, and temperature of the system can change but the system, that is, the identity of mass, does not change''. \cite{Granger1995}
+This is also the case with rigid bodies like point masses, but in that case it is not usually something worth distinguishing.
+In contrast to a system, is the \textit{control volume}, which is a definite volume of space, established by a set of surfaces, through which fluid mass can flow.
+We can see why the difference between a system and a control volume has to be made clear if we remember that we are trying to figure out the velocity of the fluid within some larger volume, in this case the pipe.
+Were we to apply Newton's Second Law as is, we would have to keep track of a set of masses as they pass through the pipe.
+One can imagine how hard it woud be to mathematically model the path of one particular chunk of flowing water.
+It would be much easier to divide our pipe into a set of definite volumes and apply the control volume approach at each of these volumes by observing the mass passing through the volume surfaces.
+That being said, we have to come up with a form of Newton's Second Law that applies to a control volume rather than a system.
+
+\subsubsection{Reynolds' Transport Theorem}
+
+In the last section, we were interested in finding the derivative of momentum with respect to time for use in Newton's Second Law.
+To find the derivative of momentum, we first want to find an equation for the derivative of any property of the fluid.
+Momentum is a property of our fluid, and if we can find a generic fluid derivative, it can be applied to momentum just as well.
+In order to find this fluid derivative, we must think about how properties change within a fluid.
+Remember, we are interested in applying Newton's Second Law to a control volume.
+For each property we are considering, and the derivative of that property, there will be a corresponding control volume.
+
+Consider a pipe with water flowing through it, and imagine dumping a bucket of microbeads into the water at the front of the pipe.
+We first shall consider the total number of beads in the pipe and how this value changes with time.
+When considering the total number of beads in the pipe, our control volume of interest is the pipe itself.
+To find the total number of beads in the pipe at a given moment, we integrate the density of beads throughout the pipe, $\rho$ over the entire volume of the pipe, $V$:
+
+\begin{equation}
+\int_{V} \rho dV
+\end{equation}
+
+Let's say we have run out of beads to pour into the pipe.
+There is now a distinct number of beads in the pipe, and the only way that number can change is if the beads exit the pipe through some surface.
+At the end of our pipe there is an outlet through which the water and beads are flowing.
+This outlet can be described by a particular surface area vector $\mathbf{S}$, which consists of a particular area magnitude $S$ and a vector normal to the surface $\mathbf{n}$.
+We can describe the number of beads exiting the pipe through this surface as a flux.
+The flux takes into account the velocity of the beads in the direction of the surface, $\mathbf{n}$, and the bead density of the water passing through the surface:
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS
+\end{equation}
+
+Since the only way the beads can leave the pipe is through this outlet, we can safely equate the rate of change of the total number of beads in the pipe to the flux of beads through the outlet $S$:
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS = - \frac{d}{dt} \int_{V} \rho dV
+\label{eq:rtt}
+\end{equation}
+
+Notice the flux of beads through the surface is equal to negative the time rate of change of beads in the pipe because beads are exiting the pipe at this surface.
+One should find the unit of the flux through $S$ is beads per second.
+This is equivalent to what we would expect for the derivative of the total number of beads in the pipe.
+The expression we just found is the integral form of what is known as the \textit{Reynolds' Transport Theorem} in the context of fluid mechanics.
+Given some particular control volume, and the density of some property within that volume, $\rho$, the Reynolds' Transport Theorem expresses the time rate of change of $\rho$.
+
+Consider Gauss' Divergence theorem:
+
+\begin{equation}
+\int_S \mathbf{F} \cdot d\mathbf{a} = \int_V div(\mathbf{F}) dV
+\end{equation}
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS = \int_V div(\mathbf{\rho{v}}) dV
+\end{equation}
+
+Gauss's theorem relates the flux of a particular vector field over a surface enclosing a volume to the divergence of that vector quantity within the volume.
+Applying Gauss's theorem to the transport theorem (\ref{eq:rtt}) we are left with:
+
+\begin{equation}
+\int_V div(\mathbf{\rho{v}}) dV = - \frac{d}{dt} \int_{V} \rho dV
+\label{eq:rtt2}
+\end{equation}
+
+This expression involves two integrals, both over some volume $V$.
+As long as $\rho$ is continuous over $V$, the derivative of the integral will be equal to the integral of the derivative (move the derivative inside the integral).
+As long as our volume $V$ is much larger than the scale of individual fluid particles, we can assume our expression (\ref{eq:rtt2}) holds for any volume (drop the integral over $V$).
+Thus, we are left with the differential form of the Reynolds Transport Theorem:
+
+\begin{equation}
+div(\rho \mathbf{v}) = -\frac{\partial{\rho}}{\partial{t}}
+\end{equation}
+
+\begin{equation*}
+\frac{\partial{\rho}}{\partial{t}} + div(\rho \mathbf{v}) = 0
+\end{equation*}
+
+This is the expression for the derivative of a fluid property, given that property is in the form of a density, $\rho$.
+
+\subsubsection{Conservation of Mass, Momentum}
+
+In the previous section, we found the derivative of the density of a property in a fluid.
+We were originally interested in finding the derivative of momentum in a fluid for use with Newton's Second Law.
+The next step would then be to express the momentum of our fluid as a density.
+
+
+\subsubsection{Fluid Forces}
+
+\subsubsection{Navier-Stokes Equations}
+
+
+
+\bibliographystyle{plainnat}
+\nocite{*}
+\bibliography{library.bib}
 
 \end{document}
 

@@ -40,9 +40,5 @@
 
 \end{easylist}
 
-\bibliographystyle{plainnat}
-\nocite{*}
-\bibliography{~/Documents/Carthage/seniorthesis/writing/seniorThesis/library.bib}
-
 \end{document}
 

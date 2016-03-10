@@ -1,0 +1,44 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Barba(2012)]{Barba2012}
+Lorena Barba.
+\newblock {ME 702 - Computational Fluid Dynamics (Lecture "zero", part 1)},
+  2012.
+\newblock URL \url{https://www.youtube.com/watch?v=35unQgSaT88}.
+
+\bibitem[Davidson(2002)]{Davidson2002}
+David~Lee Davidson.
+\newblock {The Role of Computational Fluid Dynamics in Process Industries}.
+\newblock \emph{The Bridge}, 32\penalty0 (4):\penalty0 9--15, 2002.
+\newblock URL
+  \url{http://www.nae.edu/Publications/Bridge/ExpandingFrontiersofEngineering7308/ScalableQuantumComputingUsingSolid-StateDevices.aspx}.
+
+\bibitem[Drela(2005)]{Drela2005}
+Mark Drela.
+\newblock {Fluid Mechanics}, 2005.
+\newblock URL
+  \url{http://ocw.mit.edu/courses/aeronautics-and-astronautics/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/fluid-mechanics/}.
+
+\bibitem[Ferziger and Peric(2002)]{Ferziger2002}
+Joel~H. Ferziger and Milovan Peric.
+\newblock \emph{{Computational Methods for Fluid Dynamics}}.
+\newblock 2002.
+\newblock ISBN 3540420746.
+\newblock \doi{10.1016/S0898-1221(03)90046-0}.
+
+\bibitem[Granger(1995)]{Granger1995}
+Robert~A. Granger.
+\newblock \emph{{Fluid Mechanics}}.
+\newblock Dover Publications, New York, dover firs edition, 1995.
+
+\bibitem[Kundu and Cohen(2008)]{Kundu2008}
+P~K Kundu and I~M Cohen.
+\newblock \emph{{Fluid mechanics, Volume 10}}.
+\newblock 2008.
+
+\end{thebibliography}

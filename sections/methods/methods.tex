@@ -31,43 +31,9 @@
 
 \maketitle
 
-\section{Method: Components of a Numerical Solution}
-
-\subsection{Mathematical Model}
-
-\subsubsection{Newton's Second Law Applied to a Control Volume}
-
-We can obtain a general notion for what the general equations of fluid motion should consist of by applying Newton's Second Law to a control volume of fluid.
-Newton's second law states that the mass times acceleration of a system is equal to the net force applied to that system:
-
-\begin{equation*}
-m\vec{a} = \sum{F_{system}}
-\end{equation*}
-
-Another way of expressing Newton's Second is equating the rate of change of momentum with respect to time of the system to the sum of the forces on that system:
-
-\begin{equation}
-\frac{d{\vec{p}}}{dt} = \sum F_{system}
-\end{equation}
-
-These expressions are Newton's Second Law as applied to a \textit{system}.
-In the case of fluids a system is defined as a specific group of fluid particles: ``the volume, pressure, and temperature of the system can change but the system, that is, the identity of mass, does not change''. cite Granger
-This is also the case with rigid bodies like point masses, but in that case it is not usually something worth distinguishing.
-In contrast to a system, is the \textit{control volume}, which is a definite volume of space, established by a set of surfaces, through which fluid mass can flow.
-We can see why the difference between a system and a control volume has to be made clear if we remember that we are trying to figure out the velocity of the fluid within some larger volume, in this case the pipe.
-Were we to apply Newton's Second Law as is, we would have to keep track of a set of masses as they pass through the pipe.
-One can imagine how hard it woud be to mathematically model the path of one particular chunk of flowing water.
-It would be much easier to divide our pipe into a set of definite volumes and apply the control volume approach at each of these volumes by observing the mass passing through the volume surfaces.
-That being said, we have to come up with a form of Newton's Second Law that applies to a control volume rather than a system.
+\section{Components of a Numerical Solution}
 
 
-\subsubsection{1-D Linear Convection}
-
-A good starting point for thinking about the equations of fluid motion, which are a set of vector partial differential equations, is the 1-D Linear Convection Equation:
-
-\begin{equation}
-\frac{\partial{u}}{\partial{t}} + c\frac{\partial{u}}{\partial{x}} = 0
-\end{equation}
 
 
 \subsection{Discretization Method}
@@ -173,7 +139,7 @@ By applying the above process to the pairs of points $x_i$ and $x_{i-1}$, as wel
 \end{equation}
 
 \begin{equation}
-\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_i \approx \frac{u(x_{i+1}) - u(x_{i-1})}{\Delta{x}}
+\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_i \approx \frac{u(x_{i+1}) - u(x_{i-1})}{x_{i+1}-x_{i-1}}
 \end{equation}
 
 \subsubsection{Finite Difference: Second Derivative}
