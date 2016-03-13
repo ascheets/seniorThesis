@@ -93,7 +93,7 @@ Previously I mentioned the extensive nature of fluid mechanics and that I modele
 An incompressible fluid, like water, is a fluid whose density is constant, in contrast to a compressible fluid, like air, whose density is not constant.
 These adjectives describe physical characteristics of the differing fluids.
 Specifying a fluid using these adjectives gives us a sense of what equations should be used to model the fluid, and what assumptions can be made to simplify those equations.
-Figure ? gives depicts the divisions in physical characteristics made when considering a fluid.
+Figure ? depicts the divisions in physical characteristics made when considering a fluid.
 Going right through this chart, I can classify the fluid subject of my model: liquid, incompressible, unsteady, viscous, rotational, and two-dimensional!
 These characteristics dictate which equations I can and should use to model the fluid.
 Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a compressible gas, I would instead use Euler's equations.
@@ -203,6 +203,19 @@ This is the expression for the derivative of a fluid property, given that proper
 In the previous section, we found the derivative of the density of a property in a fluid.
 We were originally interested in finding the derivative of momentum in a fluid for use with Newton's Second Law.
 The next step would then be to express the momentum of our fluid as a density.
+The density of a particular property is the value of that property per some volume.
+It is helpful to first think of the density of mass within the fluid.
+Mass per volume is a concentration we are familiar with, and it is a density we can measure.
+Since we can measure the mass per volume of a liquid, we will designate $\rho$ for this particular type of density:
+
+\begin{equation}
+\rho = \frac{\mathrm{mass}}{\mathrm{volume}}
+\end{equation}
+
+It is important to remember that in the previous section when we derived the fluid derivative, $\rho$ represented a generic density: the quantity of any property per volume.
+Now $\rho$ is specifically the mass density: the quantity of mass per volume.
+Momentum is expressed as the product of mass and velocity, $mv$.
+To express the density of momentum within our fluid, we divide $mv$ by volume.
 
 
 \subsubsection{Fluid Forces}
