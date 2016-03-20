@@ -19,7 +19,8 @@
 
 \usepackage{graphicx}
 \usepackage{caption}
-
+\usepackage{listings}
+\lstset{language=Python}
 
 \title{Writing A Fluid Solver From First Principles}
 
@@ -34,10 +35,9 @@
 \section{Introduction}
 
 This thesis is an investigation of the components of a ``fluid solver''.
-I have put ``fluid solver'' in quotations because, the topic of fluid solvers is an extremely broad topic, which rests upon an even broader topic, fluid mechanics.
 Some of the most, exciting, beautiful, and complicated processes in nature are problems of fluid mechanics.
 There are extraordinary fluid phenomena to model from the scale of the plume of steam coming from your cup of coffee in the morning (and even smaller), to the dynamics of ocean currents (and even larger).
-Words can hardly do these flows justice, which is why visualization of flows is so important in fluid dynamics, and why you should check out ``http://gfm.aps.org/'' to see some really cool examples of fluid dynamics.
+Words can hardly do these flows justice, which is why visualization of flows is so important in fluid dynamics.
 The only problem is, the math behind these exciting flows usually can't be solved analytically. 
 We can make simplifications on systems to solve them analytically, or we can setup the problem in such a way that a computer can give us an approximate answer by making a very large number of calcuations.
 The goal of my thesis research was to investigate the process of modeling a dynamic fluid mathematically and then using computational methods to visualize that fluid.
@@ -53,28 +53,29 @@ The approach you might take to answering this question depends on the accuracy d
 Determining the velocity in the pipe will involve some combination of mathematical analysis and experimental verification.
 It would make sense, if one were to derive a mathematical expression for the fluid velocity in the pipe, to construct an experiment which could verify the correctness of the model.
 When replication of the fluid process cannot be easily done in the lab, or when the measurement of the fluid properties would interfere with the flow, computational visualizations take the place of physical experiment.
-As such, the starting point of a computational fluid dynamics study is the mathematical model.
-The following are the subsequent components of a fluid solver, outlined by Ferziger and Peric.
+The following are a basic overview of the computational modeling process:
+\vspace{2mm}
 
 \begin{easylist}[enumerate]
-
-& Mathematical Model
-& Discretization Method
-& Coordinate and Basis Vector System
-& Numerical Grid
-& Finite Approximations
-& Solution Method
-& Convergence Criteria
-
+& Mathematical model
+& Discretization method
+& Analyze validitiy of discretization method
+& Solve system using computer
+& Visualize and anaylze results
 \end{easylist}
 
+\vspace{2mm}
+The starting point of a computational fluid dynamics study is the mathematical model.
+Once one has come up with a mathematical model for the fluid in question, a discretization scheme is applied to the model.
+Discretization schemes express the continuous equations of the model in a form that can be solved by a computer.
+After a discretization scheme has been chosen, one must analyze the validity of the scheme in the context of the fluid in question: does the scheme violate any of the physics governing the fluid?
+After the scheme has been validated, hopefully the scheme can be solved by a computer to produce a data set for the velocity and pressure of the fluid.
+The velocity vector field and pressure scalar field must then be visualized using graphical software for further analysis.
 The rest of this document will present what each of these components entails and how the component was applied to incompressible, unsteady, fluid flow in a pipe.
 
-\section{Components of a Numerical Solution}
+\section{Mathematical Model}
 
-\subsection{Mathematical Model}
-
-\subsubsection{What is a fluid?}
+\subsection{What is a fluid?}
 
 The first question one might have is, what is a fluid?
 A fluid is a substance without resistance to \textit{shear} forces.
@@ -87,17 +88,16 @@ The deformation the fluid undergoes is due to the fluid's lack of resistance to 
 The attraction between molecules within the solid is greater than those found in the fluid.
 Gases are also fluids as they show no resistance to sideways forces.
 
-\subsubsection{Fluid Adjectives}
+\subsection{Fluid Adjectives}
 
 Previously I mentioned the extensive nature of fluid mechanics and that I modeled \textit{incompressible} fluid flow.
 An incompressible fluid, like water, is a fluid whose density is constant, in contrast to a compressible fluid, like air, whose density is not constant.
 These adjectives describe physical characteristics of the differing fluids.
 Specifying a fluid using these adjectives gives us a sense of what equations should be used to model the fluid, and what assumptions can be made to simplify those equations.
-Figure ? gives depicts the divisions in physical characteristics made when considering a fluid.
+Figure ? depicts the divisions in physical characteristics made when considering a fluid.
 Going right through this chart, I can classify the fluid subject of my model: liquid, incompressible, unsteady, viscous, rotational, and two-dimensional!
 These characteristics dictate which equations I can and should use to model the fluid.
-Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a non-viscous compressible gas, I would instead use Euler's equations.
-
+Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a compressible gas, I would instead use Euler's equations.
 
 \subsubsection{Newton's Second Law Applied to a Control Volume}
 
@@ -115,7 +115,7 @@ Another way of expressing Newton's Second is equating the rate of change of mome
 \end{equation}
 
 These expressions are Newton's Second Law as applied to a \textit{system}.
-In the case of fluids a system is defined as a specific group of fluid particles: ``the volume, pressure, and temperature of the system can change but the system, that is, the identity of mass, does not change''. cite Granger
+In the case of fluids a system is defined as a specific group of fluid particles: ``the volume, pressure, and temperature of the system can change but the system, that is, the identity of mass, does not change''. \cite{Granger1995}
 This is also the case with rigid bodies like point masses, but in that case it is not usually something worth distinguishing.
 In contrast to a system, is the \textit{control volume}, which is a definite volume of space, established by a set of surfaces, through which fluid mass can flow.
 We can see why the difference between a system and a control volume has to be made clear if we remember that we are trying to figure out the velocity of the fluid within some larger volume, in this case the pipe.
@@ -124,15 +124,213 @@ One can imagine how hard it woud be to mathematically model the path of one part
 It would be much easier to divide our pipe into a set of definite volumes and apply the control volume approach at each of these volumes by observing the mass passing through the volume surfaces.
 That being said, we have to come up with a form of Newton's Second Law that applies to a control volume rather than a system.
 
+\subsubsection{Reynolds' Transport Theorem}
 
-\subsubsection{1-D Linear Convection}
+In the last section, we were interested in finding the derivative of momentum with respect to time for use in Newton's Second Law.
+To find the derivative of momentum, we first want to find an equation for the derivative of any property of the fluid.
+Momentum is a property of our fluid, and if we can find a generic fluid derivative, it can be applied to momentum just as well.
+In order to find this fluid derivative, we must think about how properties change within a fluid.
+Remember, we are interested in applying Newton's Second Law to a control volume.
+For each property we are considering, and the derivative of that property, there will be a corresponding control volume.
 
-A good starting point for thinking about the equations of fluid motion, which are a set of vector partial differential equations, is the 1-D Linear Convection Equation:
+Consider a pipe with water flowing through it, and imagine dumping a bucket of microbeads into the water at the front of the pipe.
+We first shall consider the total number of beads in the pipe and how this value changes with time.
+When considering the total number of beads in the pipe, our control volume of interest is the pipe itself.
+To find the total number of beads in the pipe at a given moment, we integrate the density of beads throughout the pipe, $\rho$ over the entire volume of the pipe, $V$:
 
 \begin{equation}
-\frac{\partial{u}}{\partial{t}} + c\frac{\partial{u}}{\partial{x}} = 0
+\int_{V} \rho dV
 \end{equation}
 
+Let's say we have run out of beads to pour into the pipe.
+There is now a distinct number of beads in the pipe, and the only way that number can change is if the beads exit the pipe through some surface.
+At the end of our pipe there is an outlet through which the water and beads are flowing.
+This outlet can be described by a particular surface area vector $\mathbf{S}$, which consists of a particular area magnitude $S$ and a vector normal to the surface $\mathbf{n}$.
+We can describe the number of beads exiting the pipe through this surface as a flux.
+The flux takes into account the velocity of the beads in the direction of the surface, $\mathbf{n}$, and the bead density of the water passing through the surface:
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS
+\end{equation}
+
+Since the only way the beads can leave the pipe is through this outlet, we can safely equate the rate of change of the total number of beads in the pipe to the flux of beads through the outlet $S$:
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS = - \frac{d}{dt} \int_{V} \rho dV
+\label{eq:rtt}
+\end{equation}
+
+Notice the flux of beads through the surface is equal to negative the time rate of change of beads in the pipe because beads are exiting the pipe at this surface.
+One should find the unit of the flux through $S$ is beads per second.
+This is equivalent to what we would expect for the derivative of the total number of beads in the pipe.
+The expression we just found is the integral form of what is known as the \textit{Reynolds' Transport Theorem} in the context of fluid mechanics.
+Given some particular control volume, and the density of some property within that volume, $\rho$, the Reynolds' Transport Theorem expresses the time rate of change of $\rho$.
+
+Consider Gauss' Divergence theorem:
+
+\begin{equation}
+\int_S \mathbf{F} \cdot d\mathbf{a} = \int_V div(\mathbf{F}) dV
+\end{equation}
+
+\begin{equation}
+\int_S \rho \mathbf{v} \cdot \mathbf{n} dS = \int_V div(\mathbf{\rho{v}}) dV
+\end{equation}
+
+Gauss's theorem relates the flux of a particular vector field over a surface enclosing a volume to the divergence of that vector quantity within the volume.
+Applying Gauss's theorem to the transport theorem (\ref{eq:rtt}) we are left with:
+
+\begin{equation}
+\int_V div(\mathbf{\rho{v}}) dV = - \frac{d}{dt} \int_{V} \rho dV
+\label{eq:rtt2}
+\end{equation}
+
+This expression involves two integrals, both over some volume $V$.
+As long as $\rho$ is continuous over $V$, the derivative of the integral will be equal to the integral of the derivative (move the derivative inside the integral).
+As long as our volume $V$ is much larger than the scale of individual fluid particles, we can assume our expression (\ref{eq:rtt2}) holds for any volume (drop the integral over $V$).
+Thus, we are left with the differential form of the Reynolds Transport Theorem:
+
+\begin{equation*}
+div(\rho \mathbf{v}) = -\frac{\partial{\rho}}{\partial{t}}
+\end{equation*}
+
+\begin{equation}
+\frac{\partial{\rho}}{\partial{t}} + div(\rho \mathbf{v}) = 0
+\label{eq:der}
+\end{equation}
+
+This is the expression for the derivative of a fluid property, given that property is in the form of a density, $\rho$.
+
+
+\subsubsection{Conservation of Mass, Momentum}
+
+In the previous section, we found the derivative of the density of a property in a fluid.
+We were originally interested in finding the derivative of momentum in a fluid for use with Newton's Second Law.
+The next step would then be to express the momentum of our fluid as a density.
+The density of a particular property is the value of that property per some volume.
+It is helpful to first think of the density of mass within the fluid.
+Mass per volume is a concentration we are familiar with, and it is a density we can measure.
+Since we can measure the mass per volume of a liquid, we will designate $\rho$ for this particular type of density:
+
+\begin{equation}
+\rho = \frac{\mathrm{mass}}{\mathrm{volume}}
+\end{equation}
+
+It is important to remember that in the previous section when we derived the fluid derivative, $\rho$ represented a generic density: the quantity of any property per volume.
+Now $\rho$ is specifically the mass density: the quantity of mass per volume.
+Momentum is the product of mass and velocity, $mv$.
+To find the density of momentum within our fluid, we divide $mv$ by volume.
+
+\begin{equation}
+\mathrm{density \,\, of \,\, momentum} = \frac{\mathrm{mass} \cdot \mathrm{velocity}}{\mathrm{volume}}
+\end{equation}
+
+Using our new definition of $\rho$ as the mass density, we can rewrite the density of momentum in the fluid as $\rho$ times velocity:
+
+\begin{equation}
+\mathrm{density \,\, of \,\, momentum} = \rho{v}
+\end{equation}
+
+Recalling our fluid derivative from the previous section (\ref{eq:der}), we can now write the derivative of mass (\ref{eq:massDer}), and the derivative of momentum (\ref{eq:momDer}) within our fluid:
+
+\begin{equation}
+\frac{\partial{\rho}}{\partial{t}} + div(\rho \mathbf{v})
+\label{eq:massDer}
+\end{equation}
+
+\begin{equation}
+\frac{\partial{\rho}\mathbf{v}}{\partial{t}} + div(\rho \mathbf{vv})
+\label{eq:momDer}
+\end{equation}
+
+The conservation of mass allows us to equate the mass derivative to zero: mass will neither be created nor destroyed. \cite{Ferziger2002}
+Returning to Newton's Second Law, we will equate the momentum derivative to the sum of forces on the fluid.
+
+
+\begin{equation}
+\frac{\partial{\rho}}{\partial{t}} + div(\rho \mathbf{v}) = 0
+\label{eq:massDer2}
+\end{equation}
+
+\begin{equation}
+\frac{\partial{\rho}\mathbf{v}}{\partial{t}} + \mathbf{v} \cdot grad(\rho \mathbf{v}) = \sum{\mathrm{fluid \,\, forces}}
+\label{eq:momDer2}
+\end{equation}
+
+Both of the conservation equations (\ref{eq:massDer2}), (\ref{eq:momDer2}) are vector partial differential equations and are perhaps a little easier to understand when written as a set of component equations.
+The velocity vector function, $\mathbf{v}$, has $x$, $y$, and $z$ components of velocity $u$, $v$, and $w$, respectively.
+Notice how the density, $\rho$ has been factored out of the partials; we can do this because our simulated fluid is incompressible with constant density (constant density in time and space).
+
+\begin{equation}
+\frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} + w\frac{\partial{u}}{\partial{z}} = \frac{1}{\rho}\mathbf{F}_x
+\label{eq:momComps}
+\end{equation}
+
+\begin{equation*}
+\frac{\partial{v}}{\partial{t}} + u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}} + w\frac{\partial{v}}{\partial{z}} = \frac{1}{\rho}\mathbf{F}_y
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial{w}}{\partial{t}} + u\frac{\partial{w}}{\partial{x}} + v\frac{\partial{w}}{\partial{y}} + w\frac{\partial{w}}{\partial{z}} = \frac{1}{\rho}\mathbf{F}_z
+\end{equation*}
+
+You might have noticed that the form of the divergence term changed from equation (\ref{eq:momDer}) to (\ref{eq:momDer2}).
+To see why, we should apply the chain rule to the divergence term in equation (\ref{eq:momDer}), but in the context of one of the component equations, $v_i$. \cite{Ferziger2002}
+
+\begin{equation}
+div(\rho \mathbf{v}v_i) = v_i div(\rho\mathbf{v}) + \rho\mathbf{v} \cdot grad(v_i)
+\end{equation}
+
+Using equation (\ref{eq:massDer2}), which expresses the conservation of mass in our system, the first term on the left in the above equation is equal to zero.
+Thus, our original divergence of momentum term can be simplified:
+
+\begin{equation}
+div(\rho \mathbf{vv_i}) = \rho\mathbf{v} \cdot grad(v_i)
+\end{equation}
+
+We are one step closer to the equations of fluid motion.
+We have found the complete form for the conservation of mass, and the rate of change of momentum within our fluid.
+Next, we must determine the forces that act on the fluid control volume.
+
+\subsubsection{Fluid Forces}
+
+One can mathematically describe forces within a fluid by isolating a cubic volume of fluid and considering the possible ways forces can be applied to that volume. 
+We are interested in finding the forces on a fluid for use in Newton's Second Law.
+A force we know will act on the fluid is gravity.
+In fluid mechanics, forces are separated into two categories, \textit{body forces} and \textit{surface forces}.
+Gravity is a body force because we determine the magnitude of the force by integrating over the entire volume of fluid.
+The force of gravity acts equally upon every particle within the fluid.
+Normally we would find the force of gravity by multiplying mass by the acceleration due to gravity, g.
+In the case of our a control volume within the fluid, where we are interested in the density of properties, mass is once again $\rho$.
+Thus, the force of gravity acting on a control volume in the fluid is the following:
+
+\begin{equation}
+\mathbf{F}_g = \rho\mathbf{g}
+\end{equation}
+
+The acceleration vector due to gravity doesn't always have to be in the y-direction, so in the general case we consider all components of the force due to gravity.
+
+Surface forces act upon the surface of the volume and diminish in magnitude moving away from the surface of the fluid.
+Pressure is an example of a surface force; pressure acts normal to the surface of the fluid.
+Pressure is denoted by $\sigma_{ij}$, see Figure \ref{fig:stresses}.
+The component of force tangential to the surface of a fluid is known as shear force.
+Shear force is listed as $\tau_{ij}$.
+The subscript $i$ indicates the direction of the normal vector of the particular surface the force is acting on.
+The subscript $j$ indicates the direction in which the force is acting.
+In the context of surface forces, since we are integrating over a surface, pressure force and shear force are more relevant as \textit{stresses}.
+A stress is defined as a force per area.
+The direction in which the stresses are considered positive depends on the direction of the surface's normal vector.
+
+\begin{figure}
+\includegraphics[width=3.0in]{stresses.png}
+\centering
+\captionof{figure}{}
+\label{fig:stresses}
+\end{figure}
+
+
+\subsubsection{Navier-Stokes Equations}
+
+\section{Components of a Numerical Solution}
 
 \subsection{Discretization Method}
 
@@ -237,12 +435,88 @@ By applying the above process to the pairs of points $x_i$ and $x_{i-1}$, as wel
 \end{equation}
 
 \begin{equation}
-\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_i \approx \frac{u(x_{i+1}) - u(x_{i-1})}{\Delta{x}}
+\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_i \approx \frac{u(x_{i+1}) - u(x_{i-1})}{x_{i+1}-x_{i-1}}
 \end{equation}
 
 \subsubsection{Finite Difference: Second Derivative}
 
 Coming soon...
+
+\section{Results: The Code}
+
+At this point, the Navier-Stokes equations have been presented, as well as tools for discretizing those equations.
+Next we will go over the components of the code that make solving the Navier-Stokes approximate equations.
+An aspect of the code that needs to be established in addition to the approximate equations is the setup of the system; what are the initial conditions, boundary conditions, and what does the grid look like?
+
+\subsection{Setting up the System}
+
+The simulation is of fluid flow in a pipe, therefore the shape of the domain will be rectangular.
+Let the domain span from $x = 0$ to $x = 2$ in the x direction, and from $y = 0$ to $y = 2$ in the y direction.
+Now that the shape and domain of our pipe has been established, now we must discretize the domain into a set of finite points.
+To simplify the code overall, the numerical grid will be regular: divide the rectangular domain by a set of equally spaced vertical lines and a set of equally spaced horizontal lines.
+Let the number of vertical lines dividing the space be $nx$, and the number of horizontal lines be $ny$.
+All of the variable names in this section correspond to the variables used in the python code below.
+The spacing in between points in the x direction on the grid will equal the length of the domain in the x direction, divided by the number of lines dividing the space: $dx = \frac{2}{nx}$.
+Similarily, the spacing in between points in the y direction on the grid will be $dy = \frac{2}{ny}$. 
+
+\begin{lstlisting}
+
+nx = 101
+ny = 101
+
+dx = 2.0/(nx-1)
+dy = 2.0/(ny-1)
+
+x = numpy.linspace(0,2,nx)
+y = numpy.linspace(0,2,ny)
+
+\end{lstlisting}
+
+In the final two lines of code above, the variables $x$ and $y$ are each set equal to an array spanning from 0 to 2, with nx and ny entries respectively. Next, we should set the values for the density \textbf{rho}, dynamic viscosity \textbf{mu}, kinematic viscosity \textbf{nu}, and the length of timesteps in the simulation, \textbf{dt}.
+
+\begin{lstlisting}
+
+rho = 0.125
+mu = 0.001
+nu = mu/rho
+dt = 0.001
+
+\end{lstlisting}
+
+The values of \textbf{rho}, \textbf{mu}, and \textbf{nu} are determined by the desired Reynolds number for the simulation, rather than by experimental values.
+The Reynolds number is a dimensionless parameter that characterizes the type of flow, laminar, turbulent or something in between.
+The Reynolds number takes into account the flow velocity, density, viscosity, and characteristic length and gives a general idea of what the flow should be like.
+
+\begin{equation}
+Re = \frac{\rho{v}{L}}{\mu}
+\end{equation}
+
+The flow through the pipe is driven by a pressure differential between the two ends of the pipe.
+The pressure differential will be the variable \textbf{F}, and is constant throughout the simulation, so we will set that value now.
+
+\begin{lstlisting}
+F = 2
+\end{lstlisting}
+
+The stability of the program depends on the magnitude of the pressure differential.
+The value of \textbf{F} can be thought of as a factor that scales up the velocity of the flow.
+The resolution of the numerical grid must be increased as the pressure differential is increased.
+Since the flow is driven by this pressure differential, the initial velocity throughout the pipe will be zero.
+
+\begin{lstlisting}
+u = numpy.zeros((ny,nx))
+v = numpy.zeros((ny,nx))
+p = numpy.zeros((ny,nx))
+\end{lstlisting}
+
+In the code above, \textbf{u} is a 2-dimensional array representing the x-component of the velocity vector field throughout the pipe, and \textbf{v} is a 2-dimensional array representing the y-component of the velocity.
+Above, \textbf{p} is the 2-dimensional array representing the scalar field for pressure throughout the pipe, which is also initially zero.
+One last variable we need to declare before running the code is \textbf{nt}, the number of time steps we would like the system to run for.
+This is all of the code needed to setup the initial condition of the system.
+
+\subsection{Implementing Finite Differences}
+
+\subsection{Stepping Through the Program}
 
 
 \end{document}
