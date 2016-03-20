@@ -29,6 +29,8 @@
 
 \begin{document}
 
+%\doublespacing
+
 \maketitle
 
 \section{Introduction}
@@ -241,9 +243,8 @@ Recalling our fluid derivative from the previous section (\ref{eq:der}), we can 
 \label{eq:momDer}
 \end{equation}
 
-The conservation of mass allows us to equate the mass derivative to zero: mass will neither be created nor destroyed. \cite{Ferziger2002}
+The conservation of mass allows us to equate the mass derivative to zero (\ref{eq:massDer2}): mass will neither be created nor destroyed. \cite{Ferziger2002}
 Returning to Newton's Second Law, we will equate the momentum derivative to the sum of forces on the fluid.
-
 
 \begin{equation}
 \frac{\partial{\rho}}{\partial{t}} + div(\rho \mathbf{v}) = 0
@@ -298,36 +299,157 @@ A force we know will act on the fluid is gravity.
 In fluid mechanics, forces are separated into two categories, \textit{body forces} and \textit{surface forces}.
 Gravity is a body force because we determine the magnitude of the force by integrating over the entire volume of fluid.
 The force of gravity acts equally upon every particle within the fluid.
-In contrast, surface forces are forces that act upon the surface of the volume and thus have a greater magnitude at the surface.
-Surface forces are transmitted through the volume, but diminish in magnitude moving away from the surface of the fluid.
+Normally we would find the force of gravity by multiplying mass by the acceleration due to gravity, g.
+In the case of our a control volume within the fluid, where we are interested in the density of properties, mass is once again $\rho$.
+Thus, the force of gravity acting on a control volume in the fluid is the following:
+
+\begin{equation}
+\mathbf{F}_g = \rho\mathbf{g}
+\label{eq:grav}
+\end{equation}
+
+The acceleration vector due to gravity doesn't always have to be in the y-direction, so in the general case we consider all components of the force due to gravity.
+Surface forces act upon the surface of the volume and diminish in magnitude moving away from the surface of the fluid.
 Pressure is an example of a surface force; pressure acts normal to the surface of the fluid.
 The component of force tangential to the surface of a fluid is known as shear force.
+The shear force is associated with the viscosity of the fluid.
 In the context of surface forces, since we are integrating over a surface, pressure force and shear force are more relevant as \textit{stresses}.
 A stress is defined as a force per area.
-Gravity, pressure, and shear are the only sources of pressure needed for simulation of fluid flow in a pipe.
-Electromagnetic forces are also body forces in the context of fluids, but we won't be considering those forces.
+The pressure stress is denoted by $\sigma_{ii}$, see Figure \ref{fig:stresses}.
+The shear stress is listed as $\tau_{ij}$.
+The subscript $i$ indicates the direction of the normal vector of the particular surface the force is acting on.
+The subscript $j$ indicates the direction in which the force is acting.
+For example, consider the shear stress on face 2 of the fluid volume, $\tau_{yx}$.
+The first index is $y$ because the normal vector of face 2 points in the y direction.
+The second index is $x$ because the stress, $\tau_{yx}$ acts in the x direction.
 
-We have established that the fluid forces we are interested in includes gravity, pressure stress, and shear stress.
-We would like to equate these forces to the rate of change of momentum, which we have a set of component equations for (\ref{eq:momComps}).
-Thus, we need to figure out what these relevant forces look like in the x, y, and z directions.
+\begin{figure}
+\includegraphics[width=3.0in]{stresses.png}
+\centering
+\captionof{figure}{}
+\label{fig:stresses}
+\end{figure}
 
-
-The differential form of pressure force:
+We would like to express the x, y, and z component of force on the fluid volume due to the surface stresses.
+To do this, sum up all of the stresses in the x, y, or z, direction.
+Let us consider the surface forces on our fluid volume in the x direction.
+Our entire mathematical model rests on data at a set of points.
+That is, we know the value of the stresses at the point $(x,y)$, but the surface forces act some distance away from $(x,y)$.
+If we assume the surface stresses are constant throughout the fluid, this is no problem, otherwise, we have to take into account the spatial variation of the surface stresses.
+The surface force is calculated by multiplying the surface stress by the area over which it acts.
+Taking all of this into account, the surface forces acting in the x, y, and z direction, for a 3-dimensional volume of fluid are the following:
 
 \begin{equation}
-F_p = \nabla{p(x,y,z)}
+\mathbf{F}_{S,x} = dxdydz \bigg( \frac{\partial{\sigma_{xx}}}{\partial{x}} + \frac{\partial{\tau_{yx}}}{\partial{y}} + \frac{\partial{\tau_{zx}}}{\partial{z}} \bigg)
+\label{eq:sf}
 \end{equation}
 
-The differential form of shear force:
+\begin{equation*}
+\mathbf{F}_{S,y} = dxdydz \bigg( \frac{\partial{\tau_{xy}}}{\partial{x}} + \frac{\partial{\sigma_{yy}}}{\partial{y}} + \frac{\partial{\tau_{zy}}}{\partial{z}} \bigg)
+\end{equation*}
+
+\begin{equation*}
+\mathbf{F}_{S,z} = dxdydz \bigg( \frac{\partial{\tau_{xz}}}{\partial{x}} + \frac{\partial{\tau_{yz}}}{\partial{y}} + \frac{\partial{\sigma_{zz}}}{\partial{z}} \bigg)
+\end{equation*}
+
+We have now expressed the body and surface forces we might find applied to a 3-dimensional volume of fluid. 
+The only body force we are considering is gravity, (\ref{eq:grav}).
+We just found the x, y, and z components of the surface forces, due to pressure and viscous forces, (\ref{eq:sf}).
+Previously, we found the rate of change of the momentum in the fluid, (\ref{eq:momComps}).
+Now, to completely express the conservation of momentum in the fluid, we need to substitute the net x, y, and z forces on the fluid into equation (\ref{eq:momComps}).
+For brevity, I will only include what this would look like for the x-direction.
 
 \begin{equation}
-F_s = \mu\nabla^2{\mathbf{v}}
+\frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} + w\frac{\partial{u}}{\partial{z}} = g_x + \frac{1}{\rho} \bigg(\frac{\partial{\sigma_{xx}}}{\partial{x}} + \frac{\partial{\tau_{yx}}}{\partial{y}} + \frac{\partial{\tau_{zx}}}{\partial{z}} \bigg)
+\label{eq:momCons}
 \end{equation}
+
+Now, let us think about the equations we have available to us, and the number of unknowns in the system.
+We have one equation expressing the conservation of mass, (\ref{eq:massDer2}), and three equations from the three component vector equation expressing the conservation of momentum, (\ref{eq:momCons}).
+We will set the density of the fluid, so that is not an unknown.
+We do not know the value for the three components of the velocity $\mathbf{v}$, and we do not know the value of the surface stresses $\sigma_{ii}$ and $\tau_{ij}$.
+The system is underdetermined, there are too many unknowns for the number of equations.
 
 
 \subsubsection{Navier-Stokes Equations}
 
+The Navier-Stokes equations express fluid motion for a Newtonian fluid.
+A Newtonian fluid is one in which the stresses and velocity derivatives are linearly related.
+Below are the relations between the pressure stresses and the velocity derivatives.
 
+\begin{equation}
+\sigma_{xx} = -p + 2\mu\frac{\partial{u}}{\partial{x}}
+\end{equation}
+
+\begin{equation*}
+\sigma_{yy} = -p + 2\mu\frac{\partial{v}}{\partial{y}}
+\end{equation*}
+
+\begin{equation*}
+\sigma_{zz} = -p + 2\mu\frac{\partial{w}}{\partial{z}}
+\end{equation*}
+
+The shear stresses are also linearly related to the velocity derivatives.
+
+\begin{equation}
+\tau_{xy} = \tau_{yx} = \mu\bigg(\frac{\partial{u}}{\partial{y}} + \frac{\partial{v}}{\partial{x}}\bigg)
+\end{equation}
+
+\begin{equation*}
+\tau_{yz} = \tau_{zy} = \mu\bigg(\frac{\partial{v}}{\partial{z}} + \frac{\partial{w}}{\partial{y}}\bigg)
+\end{equation*}
+
+\begin{equation*}
+\tau_{zx} = \tau_{xz} = \mu\bigg(\frac{\partial{w}}{\partial{x}} + \frac{\partial{u}}{\partial{z}}\bigg)
+\end{equation*}
+
+The Navier-Stokes equations also assume that the fluid is incompressible, and isothermal.
+An incompressible fluid has constant, uniform density throughout.
+An isothermal fluid has constant, uniform temperature throughout.
+The divergence of the velocity in an incompressible fluid will be zero.
+
+\begin{equation}
+\nabla \cdot \mathbf{v} = 0
+\end{equation}
+
+Substituting these new relations into conservation of momentum equation...
+We will get the gradient of pressure, and second derivative of velocity in viscous term.
+
+x-direction component, surface forces in terms of surface stresses, substitute in constitutive relationships (Newtonian, incompressible)
+
+\begin{equation}
+\bigg(\frac{\partial{\sigma_{xx}}}{\partial{x}} + \frac{\partial{\tau_{yx}}}{\partial{y}} + \frac{\partial{\tau_{zx}}}{\partial{z}} \bigg) = -\frac{\partial}{\partial{x}}p + 2\mu\frac{\partial^2u}{\partial{x}^2} + \mu\bigg(\frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} \bigg) + \mu\bigg(\frac{\partial^2w}{\partial{z}\partial{x}} + \frac{\partial^2u}{\partial{z}^2} \bigg)
+\end{equation}
+
+\begin{equation}
+= -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg) + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} + \frac{\partial^2w}{\partial{z}\partial{x}}  \bigg)
+\end{equation}
+
+\begin{equation}
+\mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} + \frac{\partial^2w}{\partial{z}\partial{x}}  \bigg) = \mu \frac{\partial}{\partial{x}} \bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg)
+\end{equation}
+
+\begin{equation}
+\bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg) = \nabla \cdot  \mathbf{v} = 0 \,\, (\mathrm{incompressibility \,\, condition})
+\end{equation}
+
+x-comp
+
+\begin{equation}
+-\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg)
+\end{equation}
+
+combining with momentum equation
+
+\begin{equation}
+\frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} + w\frac{\partial{u}}{\partial{z}} = g_x -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg)
+\end{equation}
+
+considering all directions, so in vector form
+
+\begin{equation}
+\rho(\frac{\partial}{\partial{t}} \mathbf{v} + (\mathbf{v} \cdot \nabla)\mathbf{v} = \rho\mathbf{g} - \nabla{p} + \mu\nabla^2{\mathbf{v}}
+\end{equation}
 
 \bibliographystyle{plainnat}
 \nocite{*}
