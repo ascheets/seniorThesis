@@ -373,12 +373,13 @@ The system is underdetermined, there are too many unknowns for the number of equ
 
 \subsubsection{Navier-Stokes Equations}
 
-The Navier-Stokes equations express fluid motion for a Newtonian fluid.
+The Navier-Stokes equations express the motion of a Newtonian fluid.
 A Newtonian fluid is one in which the stresses and velocity derivatives are linearly related.
 Below are the relations between the pressure stresses and the velocity derivatives.
 
 \begin{equation}
 \sigma_{xx} = -p + 2\mu\frac{\partial{u}}{\partial{x}}
+\label{eq:norms}
 \end{equation}
 
 \begin{equation*}
@@ -393,6 +394,7 @@ The shear stresses are also linearly related to the velocity derivatives.
 
 \begin{equation}
 \tau_{xy} = \tau_{yx} = \mu\bigg(\frac{\partial{u}}{\partial{y}} + \frac{\partial{v}}{\partial{x}}\bigg)
+\label{eq:tangs}
 \end{equation}
 
 \begin{equation*}
@@ -409,47 +411,59 @@ An isothermal fluid has constant, uniform temperature throughout.
 The divergence of the velocity in an incompressible fluid will be zero.
 
 \begin{equation}
-\nabla \cdot \mathbf{v} = 0
+\bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg) = \nabla \cdot  \mathbf{v} = 0 \,\, (\mathrm{incompressibility \,\, condition})
+\label{eq:ic}
 \end{equation}
 
-Substituting these new relations into conservation of momentum equation...
-We will get the gradient of pressure, and second derivative of velocity in viscous term.
-
-x-direction component, surface forces in terms of surface stresses, substitute in constitutive relationships (Newtonian, incompressible)
+These values for the pressure and shear stresses, based on the assumptions we are making about the fluid, are known as \textit{constitutive relations}.
+Substituting the constitutive relations into the momentum component equations (\ref{eq:momCons}) derived in the previous section can eliminate a few of the unknowns.
+Making this substitution equates to taking the partial derivative of the stresses just defined, (\ref{eq:norms}), (\ref{eq:tangs}).
 
 \begin{equation}
 \bigg(\frac{\partial{\sigma_{xx}}}{\partial{x}} + \frac{\partial{\tau_{yx}}}{\partial{y}} + \frac{\partial{\tau_{zx}}}{\partial{z}} \bigg) = -\frac{\partial}{\partial{x}}p + 2\mu\frac{\partial^2u}{\partial{x}^2} + \mu\bigg(\frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} \bigg) + \mu\bigg(\frac{\partial^2w}{\partial{z}\partial{x}} + \frac{\partial^2u}{\partial{z}^2} \bigg)
 \end{equation}
 
-\begin{equation}
+The shear stress terms can be simplified using the incompressibility condition.
+First, split the $2\mu\frac{\partial^2u}{\partial{x}^2}$ term into two $\mu\frac{\partial^2u}{\partial{x}^2}$ terms.
+Then, grouping the partials into factors of $\mu$ as such: 
+
+\begin{equation*}
 = -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg) + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} + \frac{\partial^2w}{\partial{z}\partial{x}}  \bigg)
-\end{equation}
+\end{equation*}
 
-\begin{equation}
-\mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} + \frac{\partial^2w}{\partial{z}\partial{x}}  \bigg) = \mu \frac{\partial}{\partial{x}} \bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg)
-\end{equation}
+The rightmost term in this expression can be written as the product of $\mu\frac{\partial}{\partial{x}}$ and the divergence of the velocity, $\nabla \cdot \mathbf{v}$.
+From the incompressibility condition (\ref{eq:ic}), this product is equal to zero.
 
-\begin{equation}
-\bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg) = \nabla \cdot  \mathbf{v} = 0 \,\, (\mathrm{incompressibility \,\, condition})
-\end{equation}
+\begin{equation*}
+\mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}\partial{x}} + \frac{\partial^2w}{\partial{z}\partial{x}}  \bigg) = \mu \frac{\partial}{\partial{x}} \bigg( \frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} + \frac{\partial{w}}{\partial{z}}  \bigg) = 0
+\end{equation*}
 
-x-comp
+We are left with the following as the surface forces for the x component of the momentum equations.
 
 \begin{equation}
 -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg)
 \end{equation}
 
-combining with momentum equation
+This expression accounts for the surface forces, pressure and viscous forces, in the fluid.
+This simplified form of the surface forces came about from the assumptions made regarding the fluid; the fluid is Newtonian, incompressible, and isothermal.
+Substituting the simplified form into the x component of the momentum equations:
 
 \begin{equation}
 \frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} + w\frac{\partial{u}}{\partial{z}} = g_x -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg)
 \end{equation}
 
-considering all directions, so in vector form
+This is just one of three component equations maintaining the conservation of momentum.
+All three of the equations can be bundled into one using vector notation.
 
 \begin{equation}
 \rho(\frac{\partial}{\partial{t}} \mathbf{v} + (\mathbf{v} \cdot \nabla)\mathbf{v} = \rho\mathbf{g} - \nabla{p} + \mu\nabla^2{\mathbf{v}}
 \end{equation}
+
+The three component equations of this vector, partial differential equation are what makes up the \textit{Navier Stokes Equations}.
+We have derived the equations based upon Newton's Second Law applied to a control volume of fluid.
+The left side of the vector equation accounts for the mass 
+
+Explanation of the incompressibility condition pg. 180 purcell
 
 \bibliographystyle{plainnat}
 \nocite{*}
