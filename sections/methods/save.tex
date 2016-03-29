@@ -1,0 +1,42 @@
+\begin{equation}
+u_{i+1} = u_i + \Delta{x}\frac{\partial{u}}{\partial{x}}\bigg|_i + \frac{\Delta{x^2}}{2}\frac{\partial^2{u}}{\partial{x^2}}\bigg|_i + \frac{\Delta{x^3}}{6}\frac{\partial^3{u}}{\partial{x^3}}\bigg|_i + H
+\end{equation}
+
+In this case, $\Delta{x} = x_{i+1} - x_i$, which is positive.
+
+Backward Taylor Expansion
+
+\begin{equation}
+u_{i-1} = u_i - \Delta{x}\frac{\partial{u}}{\partial{x}}\bigg|_i + \frac{\Delta{x^2}}{2}\frac{\partial^2{u}}{\partial{x^2}}\bigg|_i - \frac{\Delta{x^3}}{6}\frac{\partial^3{u}}{\partial{x^3}}\bigg|_i + H
+\end{equation}
+
+In this case, $\Delta{x} = x_{i-1} - x_i$, which is negative, hence the alternating signs.
+
+Wanting to solve for the second derivative $\frac{\partial^2{u}}{\partial{x^2}} \bigg|_i$.
+
+We could solve from only forward, or only backward.
+The forward and backward expansions produce \textit{one sided} approximations.
+For a higher order of accuracy, find a central difference approximation to the second derivative.
+This can be done by adding the forward and backward expansions, and then solving for $\frac{\partial^2{u}}{\partial{x^2}} \bigg|_i$.
+
+Add them:
+
+\begin{equation}
+u_{i+1} + u_{i-1} = 2u_i + \frac{\Delta{x^2}}{2}\frac{\partial^2{u}}{\partial{x^2}}\bigg|_i + \frac{\Delta{x^4}}{6}\frac{\partial^4{u}}{\partial{x^4}}\bigg|_i + H
+\end{equation}
+
+Notice how the terms with opposing signs cancel out.
+
+Solve for $\frac{\partial^2{u}}{\partial{x^2}} \bigg|_i$:
+
+\begin{equation}
+\frac{\partial^2{u}}{\partial{x^2}} \bigg|_i = \frac{u_{i+1} - 2u_i + u_{i-1}}{\Delta{x^2}} - \frac{\Delta{x^2}}{6}\frac{\partial^4{u}}{\partial{x^4}}\bigg|_i + H
+\end{equation}
+
+Dropping the higher order terms, we are left with a central approximation to the second order derivative:
+
+\begin{equation}
+\frac{\partial^2{u}}{\partial{x^2}} \bigg|_i = \frac{u_{i+1} - 2u_i + u_{i-1}}{\Delta{x^2}}
+\end{equation}
+
+The central difference scheme takes into account points on both sides of $x_i$.

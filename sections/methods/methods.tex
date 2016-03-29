@@ -141,8 +141,53 @@ By applying the above process to the pairs of points $x_i$ and $x_{i-1}$, as wel
 
 \subsubsection{Finite Difference: Second Derivative}
 
-Coming soon...
+A numerical scheme for the discretization of second order derivatives is needed to solve the Navier-Stokes equations.
+Second order derivatives appear in the diffusive term of the equations, $\nu\nabla^2\mathbf{v}$.
+A second order derivative, geometrically, is the slope of the line tangent to the curve representing the first derivative.
+This suggests that the approximate expression for the second derivative will be derivative of the approximate expression for the first derivative.
+Imagine the curve in the Figure \ref{fig:difs} is the curve representing the derivative of a particular function. 
+Finding the second derivative would then involve taking the derivative of that curve.
+One would have the option of taking the forward, backward, or central difference to find the second derivative. 
+The combination of any two difference techniques can be used to find the second order derivative.
+Some combinations represent the physical situation better than others, as was the case with the first derivative approximation.
+A second derivative approximation based on central differences is a good approximation for diffusive effects.
 
+Take the central difference of the first derivative at two points centered about $i$ to find the central difference second order derivative.
+The points $i + \frac{1}{2}$ and $i - \frac{1}{2}$ are a convenient choice of points to use for the central difference.
+Find the centered, first derivative at each of these points:
+
+\begin{equation}
+\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_{i + \frac{1}{2}} \approx \frac{u_{i+1} - u_i}{x_{i+1} - x_i}
+\label{eq:11}
+\end{equation}
+
+\begin{equation}
+\bigg(\frac{\partial{u}}{\partial{x}}\bigg)_{i - \frac{1}{2}} \approx \frac{u_{i} - u_{i-1}}{x_{i} - x_{i}}
+\label{eq:12}
+\end{equation}
+
+The second derivative at $i$ is then the central difference of these two derivatives:
+
+\begin{equation}
+\bigg(\frac{\partial^2{u}}{\partial{x^2}}\bigg)_{i} \approx \frac{\big(\frac{\partial{u}}{\partial{x}}\big)_{i + \frac{1}{2}} -  \big(\frac{\partial{u}}{\partial{x}}\big)_{i - \frac{1}{2}}}{\frac{1}{2}(x_{i+1} - x_{i-1})}
+\label{eq:13}
+\end{equation}
+
+Substituting the first derivative expressions (\ref{eq:11}), (\ref{eq:12}) into (\ref{eq:13}):
+
+\begin{equation}
+\bigg(\frac{\partial^2{u}}{\partial{x^2}}\bigg)_{i} \approx \frac{\frac{u_{i+1} - u_i}{x_{i+1} - x_i} - \frac{u_{i} - u_{i-1}}{x_{i} - x_{i}}}{\frac{1}{2}(x_{i+1} - x_{i-1})}
+\end{equation}
+
+Since the grid is regular, all displacements here can be written as $\Delta{x}$.
+
+\begin{equation*}
+\bigg(\frac{\partial^2{u}}{\partial{x^2}}\bigg)_{i} \approx \frac{u_{i+1} - u_i - u_i + u_{i-1}}{\Delta{x^2}}
+\end{equation*}
+
+\begin{equation*}
+\approx \frac{u_{i+1} - 2u_i + u_{i-1}}{\Delta{x^2}}
+\end{equation*}
 
 
 

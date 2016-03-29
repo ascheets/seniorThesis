@@ -452,11 +452,18 @@ Substituting the simplified form into the x component of the momentum equations:
 \frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} + w\frac{\partial{u}}{\partial{z}} = g_x -\frac{\partial}{\partial{x}}p + \mu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} + \frac{\partial^2u}{\partial{z}^2} \bigg)
 \end{equation}
 
-This is just one of three component equations maintaining the conservation of momentum.
+\begin{equation*}
+\frac{\partial{v}}{\partial{t}} + u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}} + w\frac{\partial{v}}{\partial{z}} = g_x -\frac{\partial}{\partial{y}}p + \mu \bigg( \frac{\partial^2v}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}^2} + \frac{\partial^2v}{\partial{z}^2} \bigg)
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial{w}}{\partial{t}} + u\frac{\partial{w}}{\partial{x}} + v\frac{\partial{w}}{\partial{y}} + w\frac{\partial{w}}{\partial{z}} = g_x -\frac{\partial}{\partial{z}}p + \mu \bigg( \frac{\partial^2w}{\partial{x}^2} + \frac{\partial^2w}{\partial{y}^2} + \frac{\partial^2w}{\partial{z}^2} \bigg)
+\end{equation*}
+
 All three of the equations can be bundled into one using vector notation.
 
 \begin{equation}
-\rho(\frac{\partial}{\partial{t}} \mathbf{v} + (\mathbf{v} \cdot \nabla)\mathbf{v} = \rho\mathbf{g} - \nabla{p} + \mu\nabla^2{\mathbf{v}}
+\frac{\partial}{\partial{t}} \mathbf{v} + (\mathbf{v} \cdot \nabla)\mathbf{v} = \mathbf{g} - \frac{\nabla{p}}{\rho} + \nu\nabla^2{\mathbf{v}}
 \end{equation}
 
 The three component equations of this vector, partial differential equation are what makes up the \textit{Navier Stokes Equations}.

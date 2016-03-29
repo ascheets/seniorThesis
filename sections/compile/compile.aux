@@ -1,41 +1,62 @@
 \relax 
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Fluid Modeling Process}{1}}
-\citation{Granger1995}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Mathematical Model}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}What is a fluid?}{2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Fluid Adjectives}{2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Newton's Second Law Applied to a Control Volume}{2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Reynolds' Transport Theorem}{3}}
-\newlabel{eq:rtt}{{4}{3}}
-\newlabel{eq:rtt2}{{7}{3}}
+\citation{Granger1995}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Fluid Adjectives}{3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Newton's Second Law Applied to a Control Volume}{3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Reynolds' Transport Theorem}{4}}
+\newlabel{eq:rtt}{{4}{5}}
+\newlabel{eq:rtt2}{{7}{5}}
+\newlabel{eq:der}{{8}{5}}
 \citation{Ferziger2002}
-\newlabel{eq:der}{{8}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Conservation of Mass, Momentum}{4}}
-\newlabel{eq:massDer}{{12}{4}}
-\newlabel{eq:momDer}{{13}{4}}
-\newlabel{eq:massDer2}{{14}{4}}
-\newlabel{eq:momDer2}{{15}{4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Conservation of Mass, Momentum}{6}}
+\newlabel{eq:massDer}{{12}{6}}
+\newlabel{eq:momDer}{{13}{6}}
+\newlabel{eq:massDer2}{{14}{6}}
 \citation{Ferziger2002}
-\newlabel{eq:momComps}{{16}{5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}Fluid Forces}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \relax }}{6}}
+\newlabel{eq:momDer2}{{15}{7}}
+\newlabel{eq:momComps}{{16}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}Fluid Forces}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \relax }}{8}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:stresses}{{1}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.5}Navier-Stokes Equations}{6}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Components of a Numerical Solution}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Discretization Method}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Finite Differences}{6}}
-\newlabel{eq:FD}{{20}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces To solve for the velocity and pressure of water flowing within the pipe, first we need to divide the pipe into a finite set of points. We are interested in the value of velocity and pressure at these points.\relax }}{7}}
-\newlabel{fig:grid}{{2}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The forward, backward and central differences are approximations to the actual derivative of our function. Some approximations will be better than others, depending on the function in consideration.\relax }}{7}}
-\newlabel{fig:difs}{{3}{7}}
-\newlabel{eq:BD}{{21}{7}}
-\newlabel{eq:CD}{{22}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Finite Difference from Taylor Series}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Finite Difference: Second Derivative}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results: The Code}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Setting up the System}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Implementing Finite Differences}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Stepping Through the Program}{9}}
+\newlabel{fig:stresses}{{1}{8}}
+\newlabel{eq:grav}{{19}{8}}
+\newlabel{eq:sf}{{20}{9}}
+\newlabel{eq:momCons}{{21}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.5}Navier-Stokes Equations}{9}}
+\newlabel{eq:norms}{{22}{10}}
+\newlabel{eq:tangs}{{23}{10}}
+\newlabel{eq:ic}{{24}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces To solve for the velocity and pressure of water flowing within the pipe, first we need to divide the pipe into a finite set of points. We are interested in the value of velocity and pressure at these points.\relax }}{12}}
+\newlabel{fig:grid}{{2}{12}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Components of a Numerical Solution}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Discretization Method}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The forward, backward and central differences are approximations to the actual derivative of our function. Some approximations will be better than others, depending on the function in consideration.\relax }}{13}}
+\newlabel{fig:difs}{{3}{13}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Finite Differences}{13}}
+\newlabel{eq:FD}{{29}{13}}
+\newlabel{eq:BD}{{30}{13}}
+\newlabel{eq:CD}{{31}{13}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Finite Difference from Taylor Series}{13}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.3}Finite Difference: Second Derivative}{15}}
+\newlabel{eq:11}{{39}{15}}
+\newlabel{eq:12}{{40}{15}}
+\newlabel{eq:13}{{41}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Discretizing the Navier-Stokes Equations}{16}}
+\newlabel{eq:exs1}{{43}{16}}
+\newlabel{eq:exs2}{{44}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Unsteady Term}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Convective Terms}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Pressure Terms}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Diffusion Terms}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Poisson Equation}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Solving for Forward Step in Time}{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results: The Code}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Setting up the System}{19}}
+\bibstyle{plainnat}
+\citation{*}
+\bibdata{\protect \unhbox \voidb@x \penalty \@M \ {}/Documents/Carthage/seniorthesis/writing/seniorThesis/library.bib}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Implementing Finite Differences}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Stepping Through the Program}{21}}
