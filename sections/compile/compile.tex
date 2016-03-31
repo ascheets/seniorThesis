@@ -101,7 +101,7 @@ Going right through this chart, I can classify the fluid subject of my model: li
 These characteristics dictate which equations I can and should use to model the fluid.
 Since I am modeling an incompressible fluid, I will be using the \textit{Navier-Stokes Equations}, if the fluid were a compressible gas, I would instead use Euler's equations.
 
-\subsubsection{Newton's Second Law Applied to a Control Volume}
+\subsection{Newton's Second Law Applied to a Control Volume}
 
 We can obtain a general notion for what the general equations of fluid motion should consist of by applying Newton's Second Law to a control volume of fluid.
 Newton's second law states that the mass times acceleration of a system is equal to the net force applied to that system:
@@ -126,7 +126,7 @@ One can imagine how hard it woud be to mathematically model the path of one part
 It would be much easier to divide our pipe into a set of definite volumes and apply the control volume approach at each of these volumes by observing the mass passing through the volume surfaces.
 That being said, we have to come up with a form of Newton's Second Law that applies to a control volume rather than a system.
 
-\subsubsection{Reynolds' Transport Theorem}
+\subsection{Reynolds' Transport Theorem}
 
 In the last section, we were interested in finding the derivative of momentum with respect to time for use in Newton's Second Law.
 To find the derivative of momentum, we first want to find an equation for the derivative of any property of the fluid.
@@ -203,7 +203,7 @@ div(\rho \mathbf{v}) = -\frac{\partial{\rho}}{\partial{t}}
 This is the expression for the derivative of a fluid property, given that property is in the form of a density, $\rho$.
 
 
-\subsubsection{Conservation of Mass, Momentum}
+\subsection{Conservation of Mass, Momentum}
 
 In the previous section, we found the derivative of the density of a property in a fluid.
 We were originally interested in finding the derivative of momentum in a fluid for use with Newton's Second Law.
@@ -292,7 +292,7 @@ We are one step closer to the equations of fluid motion.
 We have found the complete form for the conservation of mass, and the rate of change of momentum within our fluid.
 Next, we must determine the forces that act on the fluid control volume.
 
-\subsubsection{Fluid Forces}
+\subsection{Fluid Forces}
 
 One can mathematically describe forces within a fluid by isolating a cubic volume of fluid and considering the possible ways forces can be applied to that volume. 
 We are interested in finding the forces on a fluid for use in Newton's Second Law.
@@ -372,7 +372,7 @@ We do not know the value for the three components of the velocity $\mathbf{v}$, 
 The system is underdetermined, there are too many unknowns for the number of equations.
 
 
-\subsubsection{Navier-Stokes Equations}
+\subsection{Navier-Stokes Equations}
 
 The Navier-Stokes equations express the motion of a Newtonian fluid.
 A Newtonian fluid is one in which the stresses and velocity derivatives are linearly related.
@@ -473,9 +473,7 @@ The left side of the vector equation accounts for the mass
 
 Explanation of the incompressibility condition pg. 180 purcell
 
-\section{Components of a Numerical Solution}
-
-\subsection{Discretization Method}
+\section{Discretization Method}
 
 Numerical solutions are approximations to continuous mathematical expressions.
 The mathematical expressions of interest in this case are the component equations of the set of Navier-Stokes equations.
@@ -500,7 +498,7 @@ This is the type of grid I used to represent the pipe in the simulation.
 \label{fig:grid}
 \end{figure}
 
-\subsubsection{Finite Differences}
+\subsection{Finite Differences}
 
 Finite difference methods are an approximation to the derivative.
 Given some function $u(x)$, if we are interested in the derivative of $u(x)$ at some point $i$ along the x-axis, we could approximate the derivative as follows:
@@ -631,8 +629,11 @@ Since the grid is regular, all displacements here can be written as $\Delta{x}$.
 \approx \frac{u_{i+1} - 2u_i + u_{i-1}}{\Delta{x^2}}
 \end{equation*}
 
-\section{Discretizing the Navier-Stokes Equations}
+\subsection{Discretizing the Navier-Stokes Equations}
 
+With all of the different types of finite differences at our disposal we can now come up with an approximation to the Navier-Stokes Equations.
+In the last sections, forward, backward, and central finite differences were presented for first and second order derivatives.
+Our goal is to approximate the component equations of the Navier-Stokes vector equation using those finite differences.
 The fluid flow simulation is 2-dimensional, thus, we only need to consider two of the component equations from the Navier-Stokes Equations:
 
 \begin{equation}
@@ -644,15 +645,10 @@ The fluid flow simulation is 2-dimensional, thus, we only need to consider two o
 \frac{\partial{v}}{\partial{t}} + u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}} = g_y -\frac{1}{\rho}\frac{\partial{p}}{\partial{y}} + \nu \bigg( \frac{\partial^2v}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}^2} \bigg)
 \end{equation*}
 
-The third equation we will need to discretize is the Poisson pressure equation which ensures the divergence of the velocity will be zero.
-
-\begin{equation}
-\frac{\partial^2p}{\partial{x}^2} + \frac{\partial^2p}{\partial{y}^2} = \rho \bigg[ \frac{1}{\Delta{t}}\bigg(\frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} \bigg) - \bigg(\frac{\partial{u}}{\partial{x}} \bigg)^2 - 2\frac{\partial{v}}{\partial{x}}\frac{\partial{u}}{\partial{y}} - \bigg(\frac{\partial{v}}{\partial{y}}  \bigg)^2  \bigg]
-\label{eq:exs2}
-\end{equation}
-
-\subsection{Unsteady Term}
-
+Each derivative in the component equations could be discretized differently, that is, we have a choice as to whether we approximate the derivatives with forward, backward, or central differences.
+The particular type of finite difference we decide to use for a particular derivative is known as the \textit{numerical scheme} for that derivative.
+The derivatives of the component equations correspond to physical processes and the numerical scheme we choose will depend on the process in question.
+In other words, some numerical schemes are better approximations to certain physical processes than others.
 The notation used when discretizing continous equations is key to identifying the type of derivative being taken, and the numerical scheme being used to take that derivative.
 To demonstrate the discretization notation, consider the unsteady term of the component equations.
 The unsteady term in the Navier-Stokes Equations is $\frac{\partial{\mathbf{v}}}{\partial{t}}$, which corresponds to $\frac{\partial{u}}{\partial{t}}$ and $\frac{\partial{v}}{\partial{t}}$ in the component equations above.
@@ -669,178 +665,24 @@ One should notice that the indices indicating position, $i,j$ are constant, in c
 This is a characteristic of the partial derivative with respect to time; time evolves while the other variables are held constant.
 By discretizing the unsteady term using a forward difference, the velocity one step forward in time, $u_{i}^{n+1}$, is accessible.
 Thus, solving for $u_{i}^{n+1}$, stepping the velocity field forward in time is possible.
+Deciding which finite difference to use for each derivative of the component equations involves thinking about the characteristics of the physical process described by the derivative, and some mathematical analysis of the numerical scheme.
 
-\subsection{Convective Terms}
+Here explain process of choosing ``best'' numerical scheme for terms in component equations.
+Maybe give definitions of Consistency, stability, and convergence?
 
-The convection terms from the component equations are the following:
+\section{Solving the System}
 
-\begin{equation}
-u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}}
-\end{equation}
+\subsection{Initial Conditions}
 
-\begin{equation*}
-u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}}
-\end{equation*}
+\subsection{Stepping Through Time}
 
-The convective terms are discretized using a backward difference approach.
-Explain why this is the case?
-The discretized form of the convective components is the following:
+\subsection{Projection Method?}
 
-\begin{equation}
-u_{i,j}^n\frac{u^n_{i,j} - u^n_{i-1,j}}{\Delta{x}} + v_{i,j}^n\frac{u^n_{i,j} - u^n_{i,j-1}}{\Delta{y}}
-\end{equation}
+\section{Results}
 
-\begin{equation*}
-u_{i,j}^n\frac{v^n_{i,j} - v^n_{i-1,j}}{\Delta{x}} + v_{i,j}^n\frac{v^n_{i,j} - v^n_{i,j-1}}{\Delta{y}}
-\end{equation*}
+\section{Discussion}
 
-The partial derivatives with respect to x have changing $i$ indices and are constant in $j$.
-The partials with respect to y are just the opposite, constant in $i$ and variable in $j$.
-
-\subsection{Pressure Terms}
-
-The pressure terms from the component equations are the following:
-
-\begin{equation}
-\frac{\partial{p}}{\partial{x}}
-\end{equation}
-
-\begin{equation*}
-\frac{\partial{p}}{\partial{y}}
-\end{equation*}
-
-The partial derivatives of pressure with respect to x and y are approximated using a central difference approximation.
-Explain why this is the case?
-The discretized form of the pressure terms are the following:
-
-\begin{equation}
-\frac{p^n_{i+1,j} - p^n_{i-1,j}}{\Delta{2x}} 
-\end{equation}
-
-\begin{equation*}
-\frac{p^n_{i,j+1} - p^n_{i,j-1}}{\Delta{2y}}
-\end{equation*}
-
-\subsection{Diffusion Terms}
-
-The diffusive, viscous terms from the component equations are the following:
-
-\begin{equation}
-\nu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} \bigg)
-\end{equation}
-
-\begin{equation*}
-\nu \bigg( \frac{\partial^2v}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}^2} \bigg)
-\end{equation*}
-
-The diffusive terms are discretized using a second order, central difference derivative approximation.
-Explain why this is the case?
-The discretized form of the diffusive terms is the following:
-
-\begin{equation}
-\nu \Bigg( \frac{u^n_{i+1,j} -2u^n_{i,j} +  u^n_{i-1,j}}{\Delta{x^2}} + \frac{u^n_{i,j+1} -2u^n_{i,j} + u^n_{i,j-1}}{\Delta{y^2}} \Bigg)
-\end{equation}
-
-\begin{equation*}
-\nu \Bigg( \frac{v^n_{i+1,j} -2v^n_{i,j} + v^n_{i-1,j}}{\Delta{x^2}} + \frac{v^n_{i,j+1} -2v^n_{i,j} + v^n_{i,j-1}}{\Delta{y^2}} \Bigg)
-\end{equation*}
-
-\subsection{Poisson Equation}
-
-The left hand side of the Poisson pressure equation, (\ref{eq:exs2}) consists of two second order, spatial derivatives.
-These derivatives are discretized using central, second order finite difference approximations:
-
-\begin{equation}
-\frac{\partial^2p}{\partial{x}^2} \approx \Bigg( \frac{p^n_{i+1,j} -2p^n_{i,j} + p^n_{i-1,j}}{\Delta{x^2}} \Bigg)
-\end{equation}
-
-\begin{equation*}
-\frac{\partial^2p}{\partial{y}^2} \approx \Bigg( \frac{p^n_{i,j+1} -2p^n_{i,j} + p^n_{i,j-1}}{\Delta{y^2}} \Bigg)
-\end{equation*}
-
-The right hand side of the pressure equation consists of first order, spatial derivatives of the velocity components.
-These derivatives are all approximated uisng central, first order finite differences.
-The pattern in describing finite differences should be apparent at this point.
-Including the discretized version of the right hand side of the pressure equation here would be more redundant than helpful.
-
-\subsection{Solving for Forward Step in Time}
-
-
-\section{Results: The Code}
-
-At this point, the Navier-Stokes equations have been presented, as well as tools for discretizing those equations.
-Next we will go over the components of the code that make solving the Navier-Stokes approximate equations.
-An aspect of the code that needs to be established in addition to the approximate equations is the setup of the system; what are the initial conditions, boundary conditions, and what does the grid look like?
-
-\subsection{Setting up the System}
-
-The simulation is of fluid flow in a pipe, therefore the shape of the domain will be rectangular.
-Let the domain span from $x = 0$ to $x = 2$ in the x direction, and from $y = 0$ to $y = 2$ in the y direction.
-Now that the shape and domain of our pipe has been established, now we must discretize the domain into a set of finite points.
-To simplify the code overall, the numerical grid will be regular: divide the rectangular domain by a set of equally spaced vertical lines and a set of equally spaced horizontal lines.
-Let the number of vertical lines dividing the space be $nx$, and the number of horizontal lines be $ny$.
-All of the variable names in this section correspond to the variables used in the python code below.
-The spacing in between points in the x direction on the grid will equal the length of the domain in the x direction, divided by the number of lines dividing the space: $dx = \frac{2}{nx}$.
-Similarily, the spacing in between points in the y direction on the grid will be $dy = \frac{2}{ny}$. 
-
-\begin{lstlisting}
-
-nx = 101
-ny = 101
-
-dx = 2.0/(nx-1)
-dy = 2.0/(ny-1)
-
-x = numpy.linspace(0,2,nx)
-y = numpy.linspace(0,2,ny)
-
-\end{lstlisting}
-
-In the final two lines of code above, the variables $x$ and $y$ are each set equal to an array spanning from 0 to 2, with nx and ny entries respectively. Next, we should set the values for the density \textbf{rho}, dynamic viscosity \textbf{mu}, kinematic viscosity \textbf{nu}, and the length of timesteps in the simulation, \textbf{dt}.
-
-\begin{lstlisting}
-
-rho = 0.125
-mu = 0.001
-nu = mu/rho
-dt = 0.001
-
-\end{lstlisting}
-
-The values of \textbf{rho}, \textbf{mu}, and \textbf{nu} are determined by the desired Reynolds number for the simulation, rather than by experimental values.
-The Reynolds number is a dimensionless parameter that characterizes the type of flow, laminar, turbulent or something in between.
-The Reynolds number takes into account the flow velocity, density, viscosity, and characteristic length and gives a general idea of what the flow should be like.
-
-\begin{equation}
-Re = \frac{\rho{v}{L}}{\mu}
-\end{equation}
-
-The flow through the pipe is driven by a pressure differential between the two ends of the pipe.
-The pressure differential will be the variable \textbf{F}, and is constant throughout the simulation, so we will set that value now.
-
-\begin{lstlisting}
-F = 2
-\end{lstlisting}
-
-The stability of the program depends on the magnitude of the pressure differential.
-The value of \textbf{F} can be thought of as a factor that scales up the velocity of the flow.
-The resolution of the numerical grid must be increased as the pressure differential is increased.
-Since the flow is driven by this pressure differential, the initial velocity throughout the pipe will be zero.
-
-\begin{lstlisting}
-u = numpy.zeros((ny,nx))
-v = numpy.zeros((ny,nx))
-p = numpy.zeros((ny,nx))
-\end{lstlisting}
-
-In the code above, \textbf{u} is a 2-dimensional array representing the x-component of the velocity vector field throughout the pipe, and \textbf{v} is a 2-dimensional array representing the y-component of the velocity.
-Above, \textbf{p} is the 2-dimensional array representing the scalar field for pressure throughout the pipe, which is also initially zero.
-One last variable we need to declare before running the code is \textbf{nt}, the number of time steps we would like the system to run for.
-This is all of the code needed to setup the initial condition of the system.
-
-\subsection{Implementing Finite Differences}
-
-\subsection{Stepping Through the Program}
+\section{Conclusion}
 
 \bibliographystyle{plainnat}
 \nocite{*}

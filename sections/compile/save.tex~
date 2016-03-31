@@ -1,0 +1,144 @@
+\subsection{Discretizing the Navier-Stokes Equations}
+
+With all of the different types of finite differences at our disposal we can now come up with an approximation to the Navier-Stokes Equations.
+In the last sections, forward, backward, and central finite differences were presented for first and second order derivatives.
+Our goal is to approximate the component equations of the Navier-Stokes vector equation using those finite differences.
+The fluid flow simulation is 2-dimensional, thus, we only need to consider two of the component equations from the Navier-Stokes Equations:
+
+\begin{equation}
+\frac{\partial{u}}{\partial{t}} + u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}} = g_x - \frac{1}{\rho}\frac{\partial{p}}{\partial{x}} + \nu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} \bigg)
+\label{eq:exs1}
+\end{equation}
+
+\begin{equation*}
+\frac{\partial{v}}{\partial{t}} + u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}} = g_y -\frac{1}{\rho}\frac{\partial{p}}{\partial{y}} + \nu \bigg( \frac{\partial^2v}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}^2} \bigg)
+\end{equation*}
+
+Each derivative in the component equations could be discretized differently, that is, we have a choice as to whether we approximate the derivatives with forward, backward, or central differences.
+The particular type of finite difference we decide to use for a particular derivative is known as the \textit{numerical scheme} for that derivative.
+The derivatives of the component equations correspond to physical processes and the numerical scheme we choose will depend on the process in question.
+In other words, some numerical schemes are better approximations to certain physical processes than others.
+For example, the most accurate and stable approximation to the convection terms is a backwards finite difference.
+Some analysis is required to show why this is the case, but the best finite difference option is a little more obvious for other terms.
+
+
+The third equation we will need to discretize is the Poisson pressure equation which ensures the divergence of the velocity will be zero.
+
+\begin{equation}
+\frac{\partial^2p}{\partial{x}^2} + \frac{\partial^2p}{\partial{y}^2} = \rho \bigg[ \frac{1}{\Delta{t}}\bigg(\frac{\partial{u}}{\partial{x}} + \frac{\partial{v}}{\partial{y}} \bigg) - \bigg(\frac{\partial{u}}{\partial{x}} \bigg)^2 - 2\frac{\partial{v}}{\partial{x}}\frac{\partial{u}}{\partial{y}} - \bigg(\frac{\partial{v}}{\partial{y}}  \bigg)^2  \bigg]
+\label{eq:exs2}
+\end{equation}
+
+\subsection{Unsteady Term}
+
+The notation used when discretizing continous equations is key to identifying the type of derivative being taken, and the numerical scheme being used to take that derivative.
+To demonstrate the discretization notation, consider the unsteady term of the component equations.
+The unsteady term in the Navier-Stokes Equations is $\frac{\partial{\mathbf{v}}}{\partial{t}}$, which corresponds to $\frac{\partial{u}}{\partial{t}}$ and $\frac{\partial{v}}{\partial{t}}$ in the component equations above.
+It is useful to discretize the unsteady term using a forward difference.
+
+\begin{equation}
+\frac{\partial{u}}{\partial{t}} \approx \frac{u_{i,j}^{n+1} - u_{i,j}^{n}}{\Delta{t}}
+\end{equation}
+
+The $u$ terms in the expression above represent the x-component of velocity.
+The subscripts $i$ and $j$, indicate the position on the numerical grid where the velocity is being calculated.
+The superscript $n$ indicates the moment in time in which we are considering the velocity.
+One should notice that the indices indicating position, $i,j$ are constant, in contrast to the index indicating time, $n$.
+This is a characteristic of the partial derivative with respect to time; time evolves while the other variables are held constant.
+By discretizing the unsteady term using a forward difference, the velocity one step forward in time, $u_{i}^{n+1}$, is accessible.
+Thus, solving for $u_{i}^{n+1}$, stepping the velocity field forward in time is possible.
+
+\subsection{Convective Terms}
+
+The convection terms from the component equations are the following:
+
+\begin{equation}
+u\frac{\partial{u}}{\partial{x}} + v\frac{\partial{u}}{\partial{y}}
+\end{equation}
+
+\begin{equation*}
+u\frac{\partial{v}}{\partial{x}} + v\frac{\partial{v}}{\partial{y}}
+\end{equation*}
+
+The convective terms are discretized using a backward difference approach.
+Explain why this is the case?
+The discretized form of the convective components is the following:
+
+\begin{equation}
+u_{i,j}^n\frac{u^n_{i,j} - u^n_{i-1,j}}{\Delta{x}} + v_{i,j}^n\frac{u^n_{i,j} - u^n_{i,j-1}}{\Delta{y}}
+\end{equation}
+
+\begin{equation*}
+u_{i,j}^n\frac{v^n_{i,j} - v^n_{i-1,j}}{\Delta{x}} + v_{i,j}^n\frac{v^n_{i,j} - v^n_{i,j-1}}{\Delta{y}}
+\end{equation*}
+
+The partial derivatives with respect to x have changing $i$ indices and are constant in $j$.
+The partials with respect to y are just the opposite, constant in $i$ and variable in $j$.
+
+\subsection{Pressure Terms}
+
+The pressure terms from the component equations are the following:
+
+\begin{equation}
+\frac{\partial{p}}{\partial{x}}
+\end{equation}
+
+\begin{equation*}
+\frac{\partial{p}}{\partial{y}}
+\end{equation*}
+
+The partial derivatives of pressure with respect to x and y are approximated using a central difference approximation.
+Explain why this is the case?
+The discretized form of the pressure terms are the following:
+
+\begin{equation}
+\frac{p^n_{i+1,j} - p^n_{i-1,j}}{\Delta{2x}} 
+\end{equation}
+
+\begin{equation*}
+\frac{p^n_{i,j+1} - p^n_{i,j-1}}{\Delta{2y}}
+\end{equation*}
+
+\subsection{Diffusion Terms}
+
+The diffusive, viscous terms from the component equations are the following:
+
+\begin{equation}
+\nu \bigg( \frac{\partial^2u}{\partial{x}^2} + \frac{\partial^2u}{\partial{y}^2} \bigg)
+\end{equation}
+
+\begin{equation*}
+\nu \bigg( \frac{\partial^2v}{\partial{x}^2} + \frac{\partial^2v}{\partial{y}^2} \bigg)
+\end{equation*}
+
+The diffusive terms are discretized using a second order, central difference derivative approximation.
+Explain why this is the case?
+The discretized form of the diffusive terms is the following:
+
+\begin{equation}
+\nu \Bigg( \frac{u^n_{i+1,j} -2u^n_{i,j} +  u^n_{i-1,j}}{\Delta{x^2}} + \frac{u^n_{i,j+1} -2u^n_{i,j} + u^n_{i,j-1}}{\Delta{y^2}} \Bigg)
+\end{equation}
+
+\begin{equation*}
+\nu \Bigg( \frac{v^n_{i+1,j} -2v^n_{i,j} + v^n_{i-1,j}}{\Delta{x^2}} + \frac{v^n_{i,j+1} -2v^n_{i,j} + v^n_{i,j-1}}{\Delta{y^2}} \Bigg)
+\end{equation*}
+
+\subsection{Poisson Equation}
+
+The left hand side of the Poisson pressure equation, (\ref{eq:exs2}) consists of two second order, spatial derivatives.
+These derivatives are discretized using central, second order finite difference approximations:
+
+\begin{equation}
+\frac{\partial^2p}{\partial{x}^2} \approx \Bigg( \frac{p^n_{i+1,j} -2p^n_{i,j} + p^n_{i-1,j}}{\Delta{x^2}} \Bigg)
+\end{equation}
+
+\begin{equation*}
+\frac{\partial^2p}{\partial{y}^2} \approx \Bigg( \frac{p^n_{i,j+1} -2p^n_{i,j} + p^n_{i,j-1}}{\Delta{y^2}} \Bigg)
+\end{equation*}
+
+The right hand side of the pressure equation consists of first order, spatial derivatives of the velocity components.
+These derivatives are all approximated uisng central, first order finite differences.
+The pattern in describing finite differences should be apparent at this point.
+Including the discretized version of the right hand side of the pressure equation here would be more redundant than helpful.
+
+\subsection{Solving for Forward Step in Time}
